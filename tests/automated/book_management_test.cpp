@@ -64,6 +64,19 @@ string runSearchBookWithInput(const vector<Book>& books, const string& input) {
     return output.str();
 }
 
+string runSortBooksWithInput(vector<Book>& books, const string& input) {
+    istringstream inputStream(input);
+    ostringstream output;
+    streambuf* originalInput = cin.rdbuf(inputStream.rdbuf());
+    streambuf* originalOutput = cout.rdbuf(output.rdbuf());
+
+    sortBooks(books);
+
+    cin.rdbuf(originalInput);
+    cout.rdbuf(originalOutput);
+    return output.str();
+}
+
 string captureDisplayBooksOutput(const vector<Book>& books) {
     ostringstream output;
     streambuf* originalOutput = cout.rdbuf(output.rdbuf());
@@ -337,6 +350,67 @@ int main() {
     string missingSearchIdOutput = runSearchBookWithInput(searchBooks, "1\n9999\n");
     if (!containsText(missingSearchIdOutput, "Book not found")) {
         return fail("Search Book by missing ID should print not-found message");
+    }
+
+    vector<Book> sortByTitleBooks = {
+        {1003, "The Pragmatic Programmer", "Andrew Hunt", 4},
+        {1001, "Clean Code", "Robert C. Martin", 3},
+        {1002, "Code Complete", "Steve McConnell", 2},
+    };
+    string sortByTitleOutput = runSortBooksWithInput(sortByTitleBooks, "2\n");
+    if (sortByTitleBooks[0].title != "Clean Code" ||
+        sortByTitleBooks[1].title != "Code Complete" ||
+        sortByTitleBooks[2].title != "The Pragmatic Programmer") {
+        return fail("Sort Books by title should order titles ascending");
+    }
+    if (!containsText(sortByTitleOutput, "Books sorted successfully") ||
+        !containsText(sortByTitleOutput, "Title: Clean Code")) {
+        return fail("Sort Books by title should print success and sorted data");
+    }
+
+    vector<Book> sortByIdBooks = {
+        {1003, "The Pragmatic Programmer", "Andrew Hunt", 4},
+        {1001, "Clean Code", "Robert C. Martin", 3},
+        {1002, "Code Complete", "Steve McConnell", 2},
+    };
+    string sortByIdOutput = runSortBooksWithInput(sortByIdBooks, "1\n");
+    if (sortByIdBooks[0].id != 1001 ||
+        sortByIdBooks[1].id != 1002 ||
+        sortByIdBooks[2].id != 1003) {
+        return fail("Sort Books by ID should order IDs ascending");
+    }
+    if (!containsText(sortByIdOutput, "Books sorted successfully")) {
+        return fail("Sort Books by ID should print success message");
+    }
+
+    vector<Book> sortByQuantityBooks = {
+        {1001, "Clean Code", "Robert C. Martin", 3},
+        {1002, "Code Complete", "Steve McConnell", 2},
+        {1003, "The Pragmatic Programmer", "Andrew Hunt", 4},
+    };
+    string sortByQuantityOutput = runSortBooksWithInput(sortByQuantityBooks, "3\n");
+    if (sortByQuantityBooks[0].quantity != 2 ||
+        sortByQuantityBooks[1].quantity != 3 ||
+        sortByQuantityBooks[2].quantity != 4) {
+        return fail("Sort Books by quantity should order quantities ascending");
+    }
+    if (!containsText(sortByQuantityOutput, "Books sorted successfully")) {
+        return fail("Sort Books by quantity should print success message");
+    }
+
+    vector<Book> invalidSortBooks = {
+        {1003, "The Pragmatic Programmer", "Andrew Hunt", 4},
+        {1001, "Clean Code", "Robert C. Martin", 3},
+        {1002, "Code Complete", "Steve McConnell", 2},
+    };
+    string invalidSortOutput = runSortBooksWithInput(invalidSortBooks, "9\n");
+    if (invalidSortBooks[0].id != 1003 ||
+        invalidSortBooks[1].id != 1001 ||
+        invalidSortBooks[2].id != 1002) {
+        return fail("invalid Sort Books choice should keep book order unchanged");
+    }
+    if (!containsText(invalidSortOutput, "Invalid sort choice")) {
+        return fail("invalid Sort Books choice should print validation message");
     }
 
     vector<Book> emptyBooks;

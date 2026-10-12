@@ -106,3 +106,20 @@ Additional manual checks:
 - Search by an existing ID and confirm the correct book appears.
 - Search by an author keyword and confirm matching books appear.
 - Search using a keyword that does not exist and confirm a not-found message appears.
+
+## TC-B10: Sort Books By Title
+
+Steps:
+1. Add at least three valid books with titles in unsorted order.
+2. Choose `Sort Books`.
+3. Choose sort by title.
+4. Observe the displayed book list.
+
+Expected result:
+- Program prints a success message.
+- Books are displayed in ascending title order.
+
+Additional manual checks:
+- Sort by ID and confirm books are displayed in ascending ID order.
+- Sort by quantity and confirm books are displayed in ascending quantity order.
+- Enter an invalid sort choice and confirm the original order is unchanged.

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <limits>
+#include <utility>
 
 Book* getBookById(vector<Book>& books, int id) {
     for (Book& book : books) {
@@ -247,5 +248,45 @@ void displayBooks(const vector<Book>& books) {
 }
 
 void sortBooks(vector<Book>& books) {
-    (void)books;
+    int choice;
+
+    cout << "Sort Books" << endl;
+    cout << "1. Sort by ID" << endl;
+    cout << "2. Sort by Title" << endl;
+    cout << "3. Sort by Quantity" << endl;
+    cout << "Enter your choice: ";
+
+    if (!(cin >> choice)) {
+        cout << "Invalid sort choice." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    if (choice < 1 || choice > 3) {
+        cout << "Invalid sort choice." << endl;
+        return;
+    }
+
+    for (vector<Book>::size_type i = 0; i < books.size(); i++) {
+        for (vector<Book>::size_type j = i + 1; j < books.size(); j++) {
+            bool shouldSwap = false;
+
+            if (choice == 1 && books[i].id > books[j].id) {
+                shouldSwap = true;
+            } else if (choice == 2 && books[i].title > books[j].title) {
+                shouldSwap = true;
+            } else if (choice == 3 && books[i].quantity > books[j].quantity) {
+                shouldSwap = true;
+            }
+
+            if (shouldSwap) {
+                swap(books[i], books[j]);
+            }
+        }
+    }
+
+    cout << "Books sorted successfully." << endl;
+    displayBooks(books);
 }

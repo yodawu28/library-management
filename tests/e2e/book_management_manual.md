@@ -89,3 +89,20 @@ Expected result:
 - Program prints a success message.
 - The deleted book no longer appears in Display Books.
 - Other books remain visible.
+
+## TC-B09: Search Book By Title Keyword
+
+Steps:
+1. Add at least two valid books with different titles.
+2. Choose `Search Book`.
+3. Choose search by title.
+4. Enter a keyword that appears in one or more book titles.
+
+Expected result:
+- Program displays every book whose title contains the keyword.
+- Books that do not match the keyword are not displayed.
+
+Additional manual checks:
+- Search by an existing ID and confirm the correct book appears.
+- Search by an author keyword and confirm matching books appear.
+- Search using a keyword that does not exist and confirm a not-found message appears.

@@ -51,6 +51,19 @@ string runDeleteBookWithInput(vector<Book>& books, const string& input) {
     return output.str();
 }
 
+string runSearchBookWithInput(const vector<Book>& books, const string& input) {
+    istringstream inputStream(input);
+    ostringstream output;
+    streambuf* originalInput = cin.rdbuf(inputStream.rdbuf());
+    streambuf* originalOutput = cout.rdbuf(output.rdbuf());
+
+    searchBook(books);
+
+    cin.rdbuf(originalInput);
+    cout.rdbuf(originalOutput);
+    return output.str();
+}
+
 string captureDisplayBooksOutput(const vector<Book>& books) {
     ostringstream output;
     streambuf* originalOutput = cout.rdbuf(output.rdbuf());
@@ -64,6 +77,7 @@ string captureDisplayBooksOutput(const vector<Book>& books) {
 void verifyBookManagementFunctionsAreLinked() {
     (void)static_cast<Book* (*)(vector<Book>&, int)>(&getBookById);
     (void)static_cast<const Book* (*)(const vector<Book>&, int)>(&getBookById);
+    (void)static_cast<void (*)(const Book&)>(&printBook);
     (void)static_cast<void (*)(vector<Book>&)>(&addBook);
     (void)static_cast<void (*)(vector<Book>&)>(&updateBook);
     (void)static_cast<void (*)(vector<Book>&)>(&deleteBook);
@@ -288,6 +302,41 @@ int main() {
     }
     if (!containsText(missingDeleteOutput, "Book not found")) {
         return fail("missing Delete Book ID should print not found message");
+    }
+
+    vector<Book> searchBooks = {
+        {1001, "Clean Code", "Robert C. Martin", 3},
+        {1002, "Code Complete", "Steve McConnell", 2},
+        {1003, "The Pragmatic Programmer", "Andrew Hunt", 4},
+    };
+
+    string searchByTitleOutput = runSearchBookWithInput(searchBooks, "2\nCode\n");
+    if (!containsText(searchByTitleOutput, "Title: Clean Code") ||
+        !containsText(searchByTitleOutput, "Title: Code Complete") ||
+        containsText(searchByTitleOutput, "Title: The Pragmatic Programmer")) {
+        return fail("Search Book by title keyword should print only matching books");
+    }
+
+    string searchByIdOutput = runSearchBookWithInput(searchBooks, "1\n1003\n");
+    if (!containsText(searchByIdOutput, "ID: 1003") ||
+        !containsText(searchByIdOutput, "Title: The Pragmatic Programmer")) {
+        return fail("Search Book by ID should print the matching book");
+    }
+
+    string searchByAuthorOutput = runSearchBookWithInput(searchBooks, "3\nRobert\n");
+    if (!containsText(searchByAuthorOutput, "Author: Robert C. Martin") ||
+        containsText(searchByAuthorOutput, "Author: Andrew Hunt")) {
+        return fail("Search Book by author keyword should print only matching books");
+    }
+
+    string missingSearchOutput = runSearchBookWithInput(searchBooks, "2\nDatabase\n");
+    if (!containsText(missingSearchOutput, "No matching books found")) {
+        return fail("Search Book with no keyword matches should print not-found message");
+    }
+
+    string missingSearchIdOutput = runSearchBookWithInput(searchBooks, "1\n9999\n");
+    if (!containsText(missingSearchIdOutput, "Book not found")) {
+        return fail("Search Book by missing ID should print not-found message");
     }
 
     vector<Book> emptyBooks;

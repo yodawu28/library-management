@@ -38,6 +38,8 @@ Book* getBookById(vector<Book>& books, int id);
 
 const Book* getBookById(const vector<Book>& books, int id);
 
+void printBook(const Book& book);
+
 void addBook(vector<Book>& books);
 
 void updateBook(vector<Book>& books);

@@ -23,6 +23,14 @@ const Book* getBookById(const vector<Book>& books, int id) {
     return nullptr;
 }
 
+void printBook(const Book& book) {
+    cout << "ID: " << book.id << endl;
+    cout << "Title: " << book.title << endl;
+    cout << "Author: " << book.author << endl;
+    cout << "Quantity: " << book.quantity << endl;
+    cout << "------------------------------" << endl;
+}
+
 void addBook(vector<Book>& books) {
     Book book;
 
@@ -151,7 +159,77 @@ void deleteBook(vector<Book>& books) {
 }
 
 void searchBook(const vector<Book>& books) {
-    (void)books;
+    int choice;
+
+    cout << "Search Book" << endl;
+    cout << "1. Search by ID" << endl;
+    cout << "2. Search by Title" << endl;
+    cout << "3. Search by Author" << endl;
+    cout << "Enter your choice: ";
+
+    if (!(cin >> choice)) {
+        cout << "Invalid search choice." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    if (choice == 1) {
+        int id;
+
+        cout << "Enter book ID: ";
+        if (!(cin >> id)) {
+            cout << "Invalid book ID." << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return;
+        }
+
+        const Book* book = getBookById(books, id);
+        if (book == nullptr) {
+            cout << "Book not found." << endl;
+            return;
+        }
+
+        printBook(*book);
+        return;
+    }
+
+    if (choice == 2 || choice == 3) {
+        string keyword;
+        bool found = false;
+
+        if (choice == 2) {
+            cout << "Enter title keyword: ";
+        } else {
+            cout << "Enter author keyword: ";
+        }
+
+        getline(cin, keyword);
+        if (keyword.empty()) {
+            cout << "Keyword cannot be empty." << endl;
+            return;
+        }
+
+        for (const Book& book : books) {
+            bool matchesTitle = choice == 2 && book.title.find(keyword) != string::npos;
+            bool matchesAuthor = choice == 3 && book.author.find(keyword) != string::npos;
+
+            if (matchesTitle || matchesAuthor) {
+                printBook(book);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            cout << "No matching books found." << endl;
+        }
+
+        return;
+    }
+
+    cout << "Invalid search choice." << endl;
 }
 
 void displayBooks(const vector<Book>& books) {
@@ -164,11 +242,7 @@ void displayBooks(const vector<Book>& books) {
     cout << "------------------------------" << endl;
 
     for (const Book& book : books) {
-        cout << "ID: " << book.id << endl;
-        cout << "Title: " << book.title << endl;
-        cout << "Author: " << book.author << endl;
-        cout << "Quantity: " << book.quantity << endl;
-        cout << "------------------------------" << endl;
+        printBook(book);
     }
 }
 

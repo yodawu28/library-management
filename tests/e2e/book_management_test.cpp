@@ -17,6 +17,19 @@ string runAddBookWithInput(vector<Book>& books, const string& input) {
     return output.str();
 }
 
+string runUpdateBookWithInput(vector<Book>& books, const string& input) {
+    istringstream inputStream(input);
+    ostringstream output;
+    streambuf* originalInput = cin.rdbuf(inputStream.rdbuf());
+    streambuf* originalOutput = cout.rdbuf(output.rdbuf());
+
+    updateBook(books);
+
+    cin.rdbuf(originalInput);
+    cout.rdbuf(originalOutput);
+    return output.str();
+}
+
 string captureDisplayBooksOutput(const vector<Book>& books) {
     ostringstream output;
     streambuf* originalBuffer = cout.rdbuf(output.rdbuf());
@@ -101,6 +114,69 @@ int main() {
     );
     assert(invalidBooks.empty());
     assert(negativeQuantityOutput.find("Quantity cannot be negative") != string::npos);
+
+    vector<Book> updateBooks = {
+        {1001, "Clean Code", "Robert C. Martin", 3},
+        {1002, "Code Complete", "Steve McConnell", 2},
+    };
+
+    string updateOutput = runUpdateBookWithInput(
+        updateBooks,
+        "1001\n"
+        "Clean Code Updated\n"
+        "Robert Martin\n"
+        "5\n"
+    );
+    assert(updateBooks.size() == 2);
+    assert(updateBooks[0].id == 1001);
+    assert(updateBooks[0].title == "Clean Code Updated");
+    assert(updateBooks[0].author == "Robert Martin");
+    assert(updateBooks[0].quantity == 5);
+    assert(updateBooks[1].title == "Code Complete");
+    assert(updateOutput.find("Book updated successfully") != string::npos);
+
+    string missingUpdateOutput = runUpdateBookWithInput(
+        updateBooks,
+        "9999\n"
+    );
+    assert(updateBooks.size() == 2);
+    assert(missingUpdateOutput.find("Book not found") != string::npos);
+
+    string emptyUpdateTitleOutput = runUpdateBookWithInput(
+        updateBooks,
+        "1001\n"
+        "\n"
+        "Some Author\n"
+        "4\n"
+    );
+    assert(updateBooks[0].title == "Clean Code Updated");
+    assert(updateBooks[0].author == "Robert Martin");
+    assert(updateBooks[0].quantity == 5);
+    assert(emptyUpdateTitleOutput.find("Title cannot be empty") != string::npos);
+
+    string emptyUpdateAuthorOutput = runUpdateBookWithInput(
+        updateBooks,
+        "1001\n"
+        "Some Title\n"
+        "\n"
+        "4\n"
+    );
+    assert(updateBooks[0].title == "Clean Code Updated");
+    assert(updateBooks[0].author == "Robert Martin");
+    assert(updateBooks[0].quantity == 5);
+    assert(emptyUpdateAuthorOutput.find("Author cannot be empty") != string::npos);
+
+    string negativeUpdateQuantityOutput = runUpdateBookWithInput(
+        updateBooks,
+        "1001\n"
+        "Some Title\n"
+        "Some Author\n"
+        "-1\n"
+    );
+    assert(updateBooks[0].title == "Clean Code Updated");
+    assert(updateBooks[0].author == "Robert Martin");
+    assert(updateBooks[0].quantity == 5);
+    assert(negativeUpdateQuantityOutput.find("Quantity cannot be negative") != string::npos);
 
     vector<Book> emptyBooks;
     string emptyOutput = captureDisplayBooksOutput(emptyBooks);

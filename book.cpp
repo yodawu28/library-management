@@ -67,7 +67,55 @@ void addBook(vector<Book>& books) {
 }
 
 void updateBook(vector<Book>& books) {
-    (void)books;
+    int id;
+
+    cout << "Enter book ID to update: ";
+    if (!(cin >> id)) {
+        cout << "Invalid book ID." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    for (Book& book : books) {
+        if (book.id == id) {
+            Book updatedBook = book;
+
+            cout << "Enter new title: ";
+            getline(cin, updatedBook.title);
+            if (updatedBook.title.empty()) {
+                cout << "Title cannot be empty." << endl;
+                return;
+            }
+
+            cout << "Enter new author: ";
+            getline(cin, updatedBook.author);
+            if (updatedBook.author.empty()) {
+                cout << "Author cannot be empty." << endl;
+                return;
+            }
+
+            cout << "Enter new quantity: ";
+            if (!(cin >> updatedBook.quantity)) {
+                cout << "Invalid quantity." << endl;
+                cin.clear();
+                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                return;
+            }
+
+            if (updatedBook.quantity < 0) {
+                cout << "Quantity cannot be negative." << endl;
+                return;
+            }
+
+            book = updatedBook;
+            cout << "Book updated successfully." << endl;
+            return;
+        }
+    }
+
+    cout << "Book not found." << endl;
 }
 
 void deleteBook(vector<Book>& books) {

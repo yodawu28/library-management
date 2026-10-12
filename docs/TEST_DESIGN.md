@@ -12,6 +12,8 @@ Test tập trung vào các chức năng chính:
 
 Các test case dưới đây là cơ sở kiểm thử chính cho đồ án. Nhóm có thể chạy thủ công sau khi implement từng module, ghi lại actual result và chụp màn hình để đưa vào báo cáo.
 
+E2E theo yêu cầu môn học là kiểm thử thủ công trên chương trình thật qua menu console. Các hướng dẫn chạy E2E thủ công được đặt trong `tests/e2e/`. Các file trong `tests/automated/` chỉ là kiểm tra tự động nội bộ của nhóm để phát hiện lỗi nhanh khi sửa code.
+
 Không bắt buộc làm TDD. Quy trình phù hợp với môn học là:
 
 ```text
@@ -96,4 +98,4 @@ Trước khi chốt một thay đổi, chạy:
 ./scripts/verify.sh
 ```
 
-`./scripts/verify.sh` không thay thế bảng test case thủ công. Script này dùng để bắt lỗi deterministic như thiếu file, lỗi compiler, hoặc sai contract header. Nếu nhóm thêm test tự động sau này, cập nhật script này để chạy toàn bộ test liên quan.
+`./scripts/verify.sh` không thay thế bảng test case thủ công. Script này dùng để bắt lỗi deterministic như thiếu file, lỗi compiler, sai contract header, hoặc lỗi trong automated regression checks. Kết quả báo cáo chính vẫn dựa trên các test case thủ công và bằng chứng chạy chương trình thật.

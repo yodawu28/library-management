@@ -19,7 +19,7 @@ command -v "$CXX_BIN" >/dev/null 2>&1 || fail "C++ compiler not found: $CXX_BIN"
 HEADER="library.h"
 SOURCES=(main.cpp book.cpp reader.cpp borrow.cpp file.cpp)
 DATA_FILES=(data/books.dat data/readers.dat data/borrow_records.dat)
-TEST_SOURCES=(tests/e2e/book_management_test.cpp)
+TEST_SOURCES=(tests/automated/book_management_test.cpp)
 CXXFLAGS=(-std=c++17 -Wall -Wextra -Werror -pedantic)
 
 [[ -f "$HEADER" && -r "$HEADER" ]] || fail "missing or unreadable $HEADER"
@@ -71,11 +71,11 @@ note "building header compile check"
 note "running header compile check"
 "$TMP_DIR/header_check" || fail "header compile check failed"
 
-note "building book management e2e test"
-"$CXX_BIN" "${CXXFLAGS[@]}" -I. tests/e2e/book_management_test.cpp book.cpp -o "$TMP_DIR/book_management_test" ||
-  fail "book management e2e test build failed"
+note "building book management automated test"
+"$CXX_BIN" "${CXXFLAGS[@]}" -I. tests/automated/book_management_test.cpp book.cpp -o "$TMP_DIR/book_management_test" ||
+  fail "book management automated test build failed"
 
-note "running book management e2e test"
-"$TMP_DIR/book_management_test" || fail "book management e2e test failed"
+note "running book management automated test"
+"$TMP_DIR/book_management_test" || fail "book management automated test failed"
 
 note "ACCEPTED: deterministic verification passed"

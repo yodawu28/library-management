@@ -3,14 +3,24 @@
 #include <iostream>
 #include <limits>
 
-static bool bookIdExists(const vector<Book>& books, int id) {
-    for (const Book& book : books) {
+Book* getBookById(vector<Book>& books, int id) {
+    for (Book& book : books) {
         if (book.id == id) {
-            return true;
+            return &book;
         }
     }
 
-    return false;
+    return nullptr;
+}
+
+const Book* getBookById(const vector<Book>& books, int id) {
+    for (const Book& book : books) {
+        if (book.id == id) {
+            return &book;
+        }
+    }
+
+    return nullptr;
 }
 
 void addBook(vector<Book>& books) {
@@ -30,7 +40,7 @@ void addBook(vector<Book>& books) {
         return;
     }
 
-    if (bookIdExists(books, book.id)) {
+    if (getBookById(books, book.id) != nullptr) {
         cout << "Book ID already exists." << endl;
         return;
     }
@@ -78,48 +88,66 @@ void updateBook(vector<Book>& books) {
     }
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    for (Book& book : books) {
-        if (book.id == id) {
-            Book updatedBook = book;
+    Book* book = getBookById(books, id);
+    if (book == nullptr) {
+        cout << "Book not found." << endl;
+        return;
+    }
 
-            cout << "Enter new title: ";
-            getline(cin, updatedBook.title);
-            if (updatedBook.title.empty()) {
-                cout << "Title cannot be empty." << endl;
-                return;
-            }
+    Book updatedBook = *book;
 
-            cout << "Enter new author: ";
-            getline(cin, updatedBook.author);
-            if (updatedBook.author.empty()) {
-                cout << "Author cannot be empty." << endl;
-                return;
-            }
+    cout << "Enter new title: ";
+    getline(cin, updatedBook.title);
+    if (updatedBook.title.empty()) {
+        cout << "Title cannot be empty." << endl;
+        return;
+    }
 
-            cout << "Enter new quantity: ";
-            if (!(cin >> updatedBook.quantity)) {
-                cout << "Invalid quantity." << endl;
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                return;
-            }
+    cout << "Enter new author: ";
+    getline(cin, updatedBook.author);
+    if (updatedBook.author.empty()) {
+        cout << "Author cannot be empty." << endl;
+        return;
+    }
 
-            if (updatedBook.quantity < 0) {
-                cout << "Quantity cannot be negative." << endl;
-                return;
-            }
+    cout << "Enter new quantity: ";
+    if (!(cin >> updatedBook.quantity)) {
+        cout << "Invalid quantity." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
 
-            book = updatedBook;
-            cout << "Book updated successfully." << endl;
+    if (updatedBook.quantity < 0) {
+        cout << "Quantity cannot be negative." << endl;
+        return;
+    }
+
+    *book = updatedBook;
+    cout << "Book updated successfully." << endl;
+}
+
+void deleteBook(vector<Book>& books) {
+    int id;
+
+    cout << "Enter book ID to delete: ";
+    if (!(cin >> id)) {
+        cout << "Invalid book ID." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    for (vector<Book>::size_type i = 0; i < books.size(); i++) {
+        if (books[i].id == id) {
+            books.erase(books.begin() + i);
+            cout << "Book deleted successfully." << endl;
             return;
         }
     }
 
     cout << "Book not found." << endl;
-}
-
-void deleteBook(vector<Book>& books) {
-    (void)books;
 }
 
 void searchBook(const vector<Book>& books) {

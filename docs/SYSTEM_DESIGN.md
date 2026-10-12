@@ -77,6 +77,8 @@ const int RETURNED = 0;
 File: `book.cpp`
 
 Function:
+- `getBookById(vector<Book>& books, int id)`.
+- `getBookById(const vector<Book>& books, int id)`.
 - `addBook(vector<Book>& books)`.
 - `updateBook(vector<Book>& books)`.
 - `deleteBook(vector<Book>& books)`.
@@ -93,6 +95,9 @@ Sort hỗ trợ:
 - Sort by ID.
 - Sort by Title.
 - Sort by Quantity.
+
+`getBookById` là helper dùng chung cho các chức năng cần tìm sách theo ID.
+Hàm trả về con trỏ đến `Book` nếu tìm thấy, hoặc `nullptr` nếu không tìm thấy.
 
 ### 3.2 Reader Management
 File: `reader.cpp`

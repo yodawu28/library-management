@@ -76,3 +76,16 @@ Steps:
 Expected result:
 - Program prints a not-found message.
 - Existing books remain unchanged.
+
+## TC-B07: Delete Book Successfully
+
+Steps:
+1. Add at least two valid books.
+2. Choose `Delete Book`.
+3. Enter the ID of one existing book.
+4. Choose `Display Books`.
+
+Expected result:
+- Program prints a success message.
+- The deleted book no longer appears in Display Books.
+- Other books remain visible.

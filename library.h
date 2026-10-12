@@ -34,6 +34,10 @@ struct BorrowRecord {
 // Book Management
 // ====================
 
+Book* getBookById(vector<Book>& books, int id);
+
+const Book* getBookById(const vector<Book>& books, int id);
+
 void addBook(vector<Book>& books);
 
 void updateBook(vector<Book>& books);

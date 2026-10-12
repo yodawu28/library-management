@@ -4,6 +4,19 @@
 #include <iostream>
 #include <sstream>
 
+string runAddBookWithInput(vector<Book>& books, const string& input) {
+    istringstream inputStream(input);
+    ostringstream output;
+    streambuf* originalInput = cin.rdbuf(inputStream.rdbuf());
+    streambuf* originalOutput = cout.rdbuf(output.rdbuf());
+
+    addBook(books);
+
+    cin.rdbuf(originalInput);
+    cout.rdbuf(originalOutput);
+    return output.str();
+}
+
 string captureDisplayBooksOutput(const vector<Book>& books) {
     ostringstream output;
     streambuf* originalBuffer = cout.rdbuf(output.rdbuf());
@@ -25,6 +38,69 @@ void verifyBookManagementFunctionsAreLinked() {
 
 int main() {
     verifyBookManagementFunctionsAreLinked();
+
+    vector<Book> addedBooks;
+    string addOutput = runAddBookWithInput(
+        addedBooks,
+        "1001\n"
+        "Clean Code\n"
+        "Robert C. Martin\n"
+        "3\n"
+    );
+    assert(addedBooks.size() == 1);
+    assert(addedBooks[0].id == 1001);
+    assert(addedBooks[0].title == "Clean Code");
+    assert(addedBooks[0].author == "Robert C. Martin");
+    assert(addedBooks[0].quantity == 3);
+    assert(addOutput.find("Book added successfully") != string::npos);
+
+    string duplicateOutput = runAddBookWithInput(
+        addedBooks,
+        "1001\n"
+    );
+    assert(addedBooks.size() == 1);
+    assert(duplicateOutput.find("Book ID already exists") != string::npos);
+
+    vector<Book> invalidBooks;
+    string nonPositiveIdOutput = runAddBookWithInput(
+        invalidBooks,
+        "0\n"
+        "Invalid ID Book\n"
+        "Some Author\n"
+        "2\n"
+    );
+    assert(invalidBooks.empty());
+    assert(nonPositiveIdOutput.find("Book ID must be positive") != string::npos);
+
+    string emptyTitleOutput = runAddBookWithInput(
+        invalidBooks,
+        "1002\n"
+        "\n"
+        "Some Author\n"
+        "2\n"
+    );
+    assert(invalidBooks.empty());
+    assert(emptyTitleOutput.find("Title cannot be empty") != string::npos);
+
+    string emptyAuthorOutput = runAddBookWithInput(
+        invalidBooks,
+        "1003\n"
+        "Some Title\n"
+        "\n"
+        "2\n"
+    );
+    assert(invalidBooks.empty());
+    assert(emptyAuthorOutput.find("Author cannot be empty") != string::npos);
+
+    string negativeQuantityOutput = runAddBookWithInput(
+        invalidBooks,
+        "1004\n"
+        "Some Title\n"
+        "Some Author\n"
+        "-1\n"
+    );
+    assert(invalidBooks.empty());
+    assert(negativeQuantityOutput.find("Quantity cannot be negative") != string::npos);
 
     vector<Book> emptyBooks;
     string emptyOutput = captureDisplayBooksOutput(emptyBooks);

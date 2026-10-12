@@ -37,6 +37,31 @@ for fixture in "${DATA_FILES[@]}"; do
   [[ -f "$fixture" && -r "$fixture" ]] || fail "missing or unreadable $fixture"
 done
 
+note "checking architecture documentation freshness"
+[[ -f ARCHITECTURE.md && -r ARCHITECTURE.md ]] || fail "missing or unreadable ARCHITECTURE.md"
+[[ -f README.md && -r README.md ]] || fail "missing or unreadable README.md"
+[[ -f CHANGELOG.md && -r CHANGELOG.md ]] || fail "missing or unreadable CHANGELOG.md"
+
+if grep -q "Book module | \`book.cpp\` | Present, currently empty" ARCHITECTURE.md; then
+  fail "ARCHITECTURE.md still says book.cpp is empty"
+fi
+
+if grep -q "application implementation has not started" ARCHITECTURE.md; then
+  fail "ARCHITECTURE.md still says implementation has not started"
+fi
+
+if grep -q "implementation files are empty" ARCHITECTURE.md; then
+  fail "ARCHITECTURE.md still says implementation files are empty"
+fi
+
+if grep -q "nếu sau này nhóm thêm test tự động" README.md; then
+  fail "README.md still describes automated tests as future work"
+fi
+
+if grep -q -- "- Implement Book Management." CHANGELOG.md; then
+  fail "CHANGELOG.md still lists Book Management as planned"
+fi
+
 TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/library-verify.XXXXXX")" || fail "cannot create temp directory"
 trap 'rm -rf "$TMP_DIR"' EXIT
 

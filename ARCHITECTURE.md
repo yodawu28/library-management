@@ -11,15 +11,18 @@ Current source files:
 | Area | Files | Status |
 | --- | --- | --- |
 | Shared contract | `library.h` | Defines all data structures and public function signatures |
-| Book module | `book.cpp` | Present, currently empty |
-| Reader module | `reader.cpp` | Present, currently empty |
-| Borrow / Return module | `borrow.cpp` | Present, currently empty |
-| File I/O module | `file.cpp` | Present, currently empty |
-| UI / Integration | `main.cpp` | Present, currently empty |
-| Verification | `scripts/verify.sh` | Active deterministic syntax/header compile check |
+| Book module | `book.cpp` | Implemented for Sprint 2.0: add, update, delete, search, display, sort, `getBookById`, and `printBook` |
+| Reader module | `reader.cpp` | Present, pending Sprint 3.0 implementation |
+| Borrow / Return module | `borrow.cpp` | Present, pending Sprint 4.0 implementation |
+| File I/O module | `file.cpp` | Present, pending Sprint 5.0 implementation |
+| UI / Integration | `main.cpp` | Present, pending Sprint 6.0 implementation |
+| Verification | `scripts/verify.sh` | Active deterministic syntax/header checks, architecture freshness checks, and Book Management automated regression checks |
 | Data fixtures | `data/*.dat` | Present, currently empty |
 
-The application implementation has not started yet: `main.cpp`, `book.cpp`, `reader.cpp`, `borrow.cpp`, and `file.cpp` are 0-byte files. Therefore, the bottleneck analysis below separates confirmed architecture facts from implementation risks.
+Sprint 2.0 has completed Book Management in `book.cpp`. The remaining runtime
+modules (`main.cpp`, `reader.cpp`, `borrow.cpp`, and `file.cpp`) are still
+implementation placeholders, so the bottleneck analysis below separates
+confirmed Book Management behavior from future module risks.
 
 ## 2. Confirmed Data Model
 
@@ -51,7 +54,7 @@ The current architecture is function-module based rather than class/OOP based.
 
 | Module | Contract Evidence |
 | --- | --- |
-| Book Management | `addBook`, `updateBook`, `deleteBook`, `searchBook`, `displayBooks`, `sortBooks` in `library.h:37-47` |
+| Book Management | `getBookById`, `printBook`, `addBook`, `updateBook`, `deleteBook`, `searchBook`, `displayBooks`, `sortBooks` in the Book Management section of `library.h` |
 | Reader Management | `addReader`, `updateReader`, `deleteReader`, `searchReader`, `displayReaders` in `library.h:53-61` |
 | Borrow / Return | `borrowBook`, `returnBook` in `library.h:67-76` |
 | File I/O | `saveBooks`, `loadBooks`, `saveReaders`, `loadReaders`, `saveBorrowRecords`, `loadBorrowRecords` in `library.h:82-96` |
@@ -199,12 +202,18 @@ Recommendation:
 - Keep `scripts/verify.sh` as the canonical command.
 - Add a small `Makefile` later if the group wants a friendlier manual build command, but keep it called by `verify.sh` rather than replacing the verification entrypoint.
 
-### P5 - Current Verification Does Not Link the Full Application
+### P5 - Current Verification Links Focused Module Checks, Not the Full Application
 
-`scripts/verify.sh` checks each source file with `-fsyntax-only` (`scripts/verify.sh:38-41`) and builds a header compile check (`scripts/verify.sh:43-67`). This is enough while module files are empty, but it will not catch missing function definitions or link errors after implementation starts.
+`scripts/verify.sh` checks each source file with `-fsyntax-only`, builds a
+header compile check, checks documentation freshness for known architecture
+drift, and builds/runs the Book Management automated regression check. This
+catches Book Management link errors, but it still does not link the future full
+application because `main.cpp`, `reader.cpp`, `borrow.cpp`, and `file.cpp` are
+not implemented yet.
 
 Recommendation:
-- After the first real function implementations, extend `verify.sh` to compile and link the full application or a focused test binary.
+- Keep adding focused module regression checks as each module is implemented.
+- After menu integration, extend `verify.sh` to compile and link the full application.
 - Keep manual module test cases as the required course evidence; automated tests are optional if the team has time.
 
 ### P6 - Header Pollutes Global Namespace
@@ -226,7 +235,7 @@ Recommendation:
 
 ## 9. Security & Privacy Boundary Notes
 
-No application logging or credential handling exists yet because implementation files are empty. Current privacy/security risks are therefore design-time risks:
+No application logging or credential handling exists. Current privacy/security risks are therefore design-time risks for the remaining modules:
 
 - File I/O should reject malformed records rather than silently creating invalid state.
 - Menu input should validate numeric IDs and quantities before mutating vectors.
@@ -234,14 +243,20 @@ No application logging or credential handling exists yet because implementation 
 
 ## 10. Prioritized Action Plan
 
-1. Implement Book Management first in a readable student-project style.
-2. Run and record the Book Management manual test cases: duplicate ID, invalid quantity, search, display, and sort.
-3. Implement Reader Management with matching validation style.
-4. Implement Borrow / Return and record cross-vector consistency test cases.
-5. Implement File I/O, including malformed input handling where practical.
-6. Integrate menus after individual modules behave correctly.
-7. Run `./scripts/verify.sh` before each milestone and before final submission.
+1. Use the completed Book Management module as the style reference for future modules.
+2. Implement Reader Management with matching validation style.
+3. Implement Borrow / Return and record cross-vector consistency test cases.
+4. Implement File I/O, including malformed input handling where practical.
+5. Integrate menus after individual modules behave correctly.
+6. Run `./scripts/verify.sh` before each milestone and before final submission.
 
 ## 11. Summary
 
-The current codebase is a clean contract-first skeleton. The architecture is appropriate for a course project: flat C++ modules, shared `library.h`, in-memory vectors, and file persistence. The main future performance bottleneck is predictable O(n) vector scanning for lookup-heavy workflows, but that trade-off is acceptable at this stage and easier for the group to implement, test, and explain.
+The current codebase is a contract-first C++ course project with Book
+Management implemented and the remaining modules still pending. The
+architecture remains appropriate for the assignment: flat C++ modules, shared
+`library.h`, in-memory vectors, focused automated checks, manual E2E evidence,
+and file persistence planned for a later sprint. The main future performance
+bottleneck is predictable O(n) vector scanning for lookup-heavy workflows, but
+that trade-off is acceptable at this stage and easier for the group to
+implement, test, and explain.

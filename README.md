@@ -55,7 +55,11 @@ Chạy verification chính:
 ./scripts/verify.sh
 ```
 
-Script này kiểm tra compiler, file bắt buộc, dữ liệu mẫu, cú pháp C++ và header compile check. Bảng test case trong `docs/TEST_DESIGN.md` là tài liệu kiểm thử chính cho báo cáo; nếu sau này nhóm thêm test tự động, mở rộng script này thay vì tạo entrypoint mới.
+Script này kiểm tra compiler, file bắt buộc, dữ liệu mẫu, cú pháp C++, header
+compile check, architecture documentation freshness và các automated regression
+checks hiện có. Bảng test case trong `docs/TEST_DESIGN.md` vẫn là tài liệu
+kiểm thử chính cho báo cáo; nếu nhóm thêm test tự động mới, mở rộng script này
+thay vì tạo entrypoint khác.
 
 ## Tài Liệu
 - `docs/SRS.md`: yêu cầu phần mềm.

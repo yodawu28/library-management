@@ -30,18 +30,22 @@ Chạy ./scripts/verify.sh
 
 ## 2. Book Management Test Cases
 
+Kết quả Book Management hiện được ghi từ focused module checks trong
+`tests/automated/book_management_test.cpp`. E2E qua menu console sẽ được chạy
+lại sau Sprint 6.0 khi menu integration hoàn tất.
+
 | Test ID | Chức năng | Input | Expected Result | Actual Result | Status |
 | --- | --- | --- | --- | --- | --- |
-| TC-B01 | Add Book | ID mới, title hợp lệ, author hợp lệ, quantity >= 0 | Thêm sách thành công | Chưa chạy | Pending |
-| TC-B02 | Add Book | ID đã tồn tại | Báo lỗi trùng ID | Chưa chạy | Pending |
-| TC-B03 | Add Book | Title rỗng | Báo lỗi dữ liệu không hợp lệ | Chưa chạy | Pending |
-| TC-B04 | Add Book | Quantity < 0 | Báo lỗi dữ liệu không hợp lệ | Chưa chạy | Pending |
-| TC-B05 | Update Book | ID tồn tại, dữ liệu mới hợp lệ | Cập nhật sách thành công | Chưa chạy | Pending |
-| TC-B06 | Update Book | ID không tồn tại | Báo lỗi không tìm thấy sách | Chưa chạy | Pending |
-| TC-B07 | Delete Book | ID tồn tại và không đang được mượn | Xóa sách thành công | Chưa chạy | Pending |
-| TC-B08 | Delete Book | ID tồn tại nhưng đang được mượn | Từ chối xóa | Chưa chạy | Pending |
-| TC-B09 | Search Book | Search by title keyword | Hiển thị các sách khớp keyword | Chưa chạy | Pending |
-| TC-B10 | Sort Books | Sort by title | Danh sách được sắp xếp theo title | Chưa chạy | Pending |
+| TC-B01 | Add Book | ID mới, title hợp lệ, author hợp lệ, quantity >= 0 | Thêm sách thành công | Focused module check thêm sách ID `1001`, lưu đúng title, author, quantity và in thông báo thành công | Pass |
+| TC-B02 | Add Book | ID đã tồn tại | Báo lỗi trùng ID | Focused module check nhập lại ID `1001`, không thêm sách mới và in lỗi trùng ID | Pass |
+| TC-B03 | Add Book | Title rỗng | Báo lỗi dữ liệu không hợp lệ | Focused module check title rỗng, không thêm sách và in lỗi title rỗng | Pass |
+| TC-B04 | Add Book | Quantity < 0 | Báo lỗi dữ liệu không hợp lệ | Focused module check quantity `-1`, không thêm sách và in lỗi quantity âm | Pass |
+| TC-B05 | Update Book | ID tồn tại, dữ liệu mới hợp lệ | Cập nhật sách thành công | Focused module check cập nhật ID `1001`, đổi đúng title, author, quantity và giữ sách khác không đổi | Pass |
+| TC-B06 | Update Book | ID không tồn tại | Báo lỗi không tìm thấy sách | Focused module check nhập ID `9999`, danh sách không đổi và in lỗi không tìm thấy | Pass |
+| TC-B07 | Delete Book | ID tồn tại và không đang được mượn | Xóa sách thành công | Focused module check xóa ID `1002`, danh sách giảm một phần tử và giữ đúng thứ tự sách còn lại | Pass |
+| TC-B08 | Delete Book | ID tồn tại nhưng đang được mượn | Từ chối xóa | Chưa thể chạy trong Sprint 2.0 vì `deleteBook(vector<Book>&)` chưa nhận `BorrowRecord`; chuyển kiểm tra borrowed-book protection sang Sprint 4 | Deferred |
+| TC-B09 | Search Book | Search by title keyword | Hiển thị các sách khớp keyword | Focused module check keyword `Code`, hiển thị đúng các sách có title khớp và không hiển thị sách không khớp | Pass |
+| TC-B10 | Sort Books | Sort by title | Danh sách được sắp xếp theo title | Focused module check sort by title cho kết quả `Clean Code`, `Code Complete`, `The Pragmatic Programmer`; sort ID và quantity cũng đã được kiểm tra thêm | Pass |
 
 ## 3. Reader Management Test Cases
 

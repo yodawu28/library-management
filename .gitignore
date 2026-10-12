@@ -1,0 +1,17 @@
+# Local editor and OS files
+.DS_Store
+.vscode/
+.idea/
+
+# Build outputs
+*.o
+*.out
+*.exe
+*.dSYM/
+build/
+bin/
+obj/
+
+# Temporary files
+*.tmp
+*.log

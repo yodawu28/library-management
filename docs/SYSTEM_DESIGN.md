@@ -105,6 +105,7 @@ Hàm trả về con trỏ đến `Book` nếu tìm thấy, hoặc `nullptr` nế
 File: `reader.cpp`
 
 Function:
+- `printReader(const Reader& reader)`.
 - `addReader(vector<Reader>& readers)`.
 - `updateReader(vector<Reader>& readers)`.
 - `deleteReader(vector<Reader>& readers)`.
@@ -115,6 +116,9 @@ Search hỗ trợ:
 - Search by ID.
 - Search by Name keyword.
 - Search by Phone.
+
+`printReader` là helper dùng chung để hiển thị một độc giả theo cùng format.
+`displayReaders` dùng helper này để tránh lặp logic in thông tin độc giả.
 
 ### 3.3 Borrow / Return
 File: `borrow.cpp`

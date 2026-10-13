@@ -56,6 +56,8 @@ void sortBooks(vector<Book>& books);
 // Reader Management
 // ====================
 
+void printReader(const Reader& reader);
+
 void addReader(vector<Reader>& readers);
 
 void updateReader(vector<Reader>& readers);

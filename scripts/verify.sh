@@ -19,7 +19,10 @@ command -v "$CXX_BIN" >/dev/null 2>&1 || fail "C++ compiler not found: $CXX_BIN"
 HEADER="library.h"
 SOURCES=(main.cpp book.cpp reader.cpp borrow.cpp file.cpp)
 DATA_FILES=(data/books.dat data/readers.dat data/borrow_records.dat)
-TEST_SOURCES=(tests/automated/book_management_test.cpp)
+TEST_SOURCES=(
+  tests/automated/book_management_test.cpp
+  tests/automated/reader_management_test.cpp
+)
 CXXFLAGS=(-std=c++17 -Wall -Wextra -Werror -pedantic)
 
 [[ -f "$HEADER" && -r "$HEADER" ]] || fail "missing or unreadable $HEADER"
@@ -102,5 +105,12 @@ note "building book management automated test"
 
 note "running book management automated test"
 "$TMP_DIR/book_management_test" || fail "book management automated test failed"
+
+note "building reader management automated test"
+"$CXX_BIN" "${CXXFLAGS[@]}" -I. tests/automated/reader_management_test.cpp reader.cpp -o "$TMP_DIR/reader_management_test" ||
+  fail "reader management automated test build failed"
+
+note "running reader management automated test"
+"$TMP_DIR/reader_management_test" || fail "reader management automated test failed"
 
 note "ACCEPTED: deterministic verification passed"

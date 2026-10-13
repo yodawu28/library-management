@@ -51,14 +51,14 @@ lại sau Sprint 6.0 khi menu integration hoàn tất.
 
 | Test ID | Chức năng | Input | Expected Result | Actual Result | Status |
 | --- | --- | --- | --- | --- | --- |
-| TC-R01 | Add Reader | ID mới, name hợp lệ, phone hợp lệ | Thêm độc giả thành công | Chưa chạy | Pending |
-| TC-R02 | Add Reader | ID đã tồn tại | Báo lỗi trùng ID | Chưa chạy | Pending |
-| TC-R03 | Add Reader | Name rỗng | Báo lỗi dữ liệu không hợp lệ | Chưa chạy | Pending |
-| TC-R04 | Update Reader | ID tồn tại, dữ liệu mới hợp lệ | Cập nhật độc giả thành công | Chưa chạy | Pending |
-| TC-R05 | Update Reader | ID không tồn tại | Báo lỗi không tìm thấy độc giả | Chưa chạy | Pending |
-| TC-R06 | Delete Reader | ID tồn tại và không đang mượn sách | Xóa độc giả thành công | Chưa chạy | Pending |
-| TC-R07 | Delete Reader | ID tồn tại nhưng đang mượn sách | Từ chối xóa | Chưa chạy | Pending |
-| TC-R08 | Search Reader | Search by name keyword | Hiển thị độc giả khớp keyword | Chưa chạy | Pending |
+| TC-R01 | Add Reader | ID mới, name hợp lệ, phone hợp lệ | Thêm độc giả thành công | Focused module check thêm reader ID `2001`, lưu đúng name, phone và in thông báo thành công | Pass |
+| TC-R02 | Add Reader | ID đã tồn tại | Báo lỗi trùng ID | Focused module check nhập lại ID `2001`, không thêm reader mới và in lỗi trùng ID | Pass |
+| TC-R03 | Add Reader | Name rỗng | Báo lỗi dữ liệu không hợp lệ | Focused module check name rỗng, không thêm reader và in lỗi name rỗng; phone rỗng cũng đã được kiểm tra thêm | Pass |
+| TC-R04 | Update Reader | ID tồn tại, dữ liệu mới hợp lệ | Cập nhật độc giả thành công | Focused module check cập nhật ID `2001`, đổi đúng name, phone và giữ reader khác không đổi | Pass |
+| TC-R05 | Update Reader | ID không tồn tại | Báo lỗi không tìm thấy độc giả | Focused module check nhập ID `9999`, danh sách không đổi và in lỗi không tìm thấy | Pass |
+| TC-R06 | Delete Reader | ID tồn tại và không đang mượn sách | Xóa độc giả thành công | Focused module check xóa ID `2002`, danh sách giảm một phần tử và giữ đúng thứ tự reader còn lại | Pass |
+| TC-R07 | Delete Reader | ID tồn tại nhưng đang mượn sách | Từ chối xóa | Chưa thể chạy trong Sprint 3.0 vì `deleteReader(vector<Reader>&)` chưa nhận `BorrowRecord`; chuyển kiểm tra active-borrow protection sang Sprint 4 | Deferred |
+| TC-R08 | Search Reader | Search by name keyword | Hiển thị độc giả khớp keyword | Focused module check keyword `Van`, hiển thị đúng các reader có name khớp và không hiển thị reader không khớp; search ID và phone cũng đã được kiểm tra thêm | Pass |
 
 ## 4. Borrow / Return Test Cases
 

@@ -98,6 +98,29 @@ void updateReader(vector<Reader>& readers) {
     cout << "Reader updated successfully." << endl;
 }
 
+void deleteReader(vector<Reader>& readers) {
+    int id;
+
+    cout << "Enter reader ID to delete: ";
+    if (!(cin >> id)) {
+        cout << "Invalid reader ID." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    for (vector<Reader>::size_type i = 0; i < readers.size(); i++) {
+        if (readers[i].id == id) {
+            readers.erase(readers.begin() + i);
+            cout << "Reader deleted successfully." << endl;
+            return;
+        }
+    }
+
+    cout << "Reader not found." << endl;
+}
+
 void displayReaders(const vector<Reader>& readers) {
     if (readers.empty()) {
         cout << "No readers available." << endl;

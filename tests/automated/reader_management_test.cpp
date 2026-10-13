@@ -58,6 +58,19 @@ string runUpdateReaderWithInput(vector<Reader>& readers, const string& input) {
     return output.str();
 }
 
+string runDeleteReaderWithInput(vector<Reader>& readers, const string& input) {
+    istringstream inputStream(input);
+    ostringstream output;
+    streambuf* originalInput = cin.rdbuf(inputStream.rdbuf());
+    streambuf* originalOutput = cout.rdbuf(output.rdbuf());
+
+    deleteReader(readers);
+
+    cin.rdbuf(originalInput);
+    cout.rdbuf(originalOutput);
+    return output.str();
+}
+
 void verifyReaderManagementFunctionsAreLinked() {
     (void)static_cast<bool (*)(int)>(&isPositiveId);
     (void)static_cast<bool (*)(const string&)>(&isEmptyText);
@@ -65,6 +78,7 @@ void verifyReaderManagementFunctionsAreLinked() {
     (void)static_cast<void (*)(const Reader&)>(&printReader);
     (void)static_cast<void (*)(vector<Reader>&)>(&addReader);
     (void)static_cast<void (*)(vector<Reader>&)>(&updateReader);
+    (void)static_cast<void (*)(vector<Reader>&)>(&deleteReader);
     (void)static_cast<void (*)(const vector<Reader>&)>(&displayReaders);
 }
 
@@ -251,6 +265,42 @@ int main() {
     }
     if (!containsText(emptyUpdatePhoneOutput, "Phone cannot be empty")) {
         return fail("empty update reader phone should print validation message");
+    }
+
+    vector<Reader> deleteReaders = {
+        {2001, "Nguyen Van An", "0901234567"},
+        {2002, "Tran Thi Binh", "0902222333"},
+        {2003, "Le Van Cuong", "0903333444"},
+    };
+
+    string deleteOutput = runDeleteReaderWithInput(deleteReaders, "2002\n");
+    if (deleteReaders.size() != 2 ||
+        deleteReaders[0].id != 2001 ||
+        deleteReaders[1].id != 2003) {
+        return fail("Delete Reader should remove selected reader and keep remaining order");
+    }
+    if (!containsText(deleteOutput, "Reader deleted successfully")) {
+        return fail("Delete Reader should print success message");
+    }
+
+    string missingDeleteOutput = runDeleteReaderWithInput(deleteReaders, "9999\n");
+    if (deleteReaders.size() != 2 ||
+        deleteReaders[0].id != 2001 ||
+        deleteReaders[1].id != 2003) {
+        return fail("missing Delete Reader ID should keep reader list unchanged");
+    }
+    if (!containsText(missingDeleteOutput, "Reader not found")) {
+        return fail("missing Delete Reader ID should print not found message");
+    }
+
+    string invalidDeleteInputOutput = runDeleteReaderWithInput(deleteReaders, "abc\n");
+    if (deleteReaders.size() != 2 ||
+        deleteReaders[0].id != 2001 ||
+        deleteReaders[1].id != 2003) {
+        return fail("invalid Delete Reader input should keep reader list unchanged");
+    }
+    if (!containsText(invalidDeleteInputOutput, "Invalid reader ID")) {
+        return fail("invalid Delete Reader input should print validation message");
     }
 
     cout << "PASS: reader management automated checks" << endl;

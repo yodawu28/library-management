@@ -46,8 +46,6 @@ bool isEmptyText(const string& text);
 
 Book* getBookById(vector<Book>& books, int id);
 
-const Book* getBookById(const vector<Book>& books, int id);
-
 void printBook(const Book& book);
 
 void addBook(vector<Book>& books);
@@ -56,7 +54,7 @@ void updateBook(vector<Book>& books);
 
 void deleteBook(vector<Book>& books);
 
-void searchBook(const vector<Book>& books);
+void searchBook(vector<Book>& books);
 
 void displayBooks(const vector<Book>& books);
 
@@ -65,6 +63,8 @@ void sortBooks(vector<Book>& books);
 // ====================
 // Reader Management
 // ====================
+
+Reader* getReaderById(vector<Reader>& readers, int id);
 
 void printReader(const Reader& reader);
 

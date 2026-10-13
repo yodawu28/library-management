@@ -45,11 +45,26 @@ string runAddReaderWithInput(vector<Reader>& readers, const string& input) {
     return output.str();
 }
 
+string runUpdateReaderWithInput(vector<Reader>& readers, const string& input) {
+    istringstream inputStream(input);
+    ostringstream output;
+    streambuf* originalInput = cin.rdbuf(inputStream.rdbuf());
+    streambuf* originalOutput = cout.rdbuf(output.rdbuf());
+
+    updateReader(readers);
+
+    cin.rdbuf(originalInput);
+    cout.rdbuf(originalOutput);
+    return output.str();
+}
+
 void verifyReaderManagementFunctionsAreLinked() {
     (void)static_cast<bool (*)(int)>(&isPositiveId);
     (void)static_cast<bool (*)(const string&)>(&isEmptyText);
+    (void)static_cast<Reader* (*)(vector<Reader>&, int)>(&getReaderById);
     (void)static_cast<void (*)(const Reader&)>(&printReader);
     (void)static_cast<void (*)(vector<Reader>&)>(&addReader);
+    (void)static_cast<void (*)(vector<Reader>&)>(&updateReader);
     (void)static_cast<void (*)(const vector<Reader>&)>(&displayReaders);
 }
 
@@ -61,6 +76,23 @@ int main() {
     }
     if (!isEmptyText("") || isEmptyText("Nguyen Van An")) {
         return fail("isEmptyText should detect only empty text");
+    }
+
+    vector<Reader> helperReaders = {
+        {2001, "Nguyen Van An", "0901234567"},
+        {2002, "Tran Thi Binh", "0902222333"},
+    };
+    Reader* mutableReader = getReaderById(helperReaders, 2002);
+    if (mutableReader == nullptr || mutableReader->name != "Tran Thi Binh") {
+        return fail("getReaderById should return a matching reader pointer");
+    }
+    mutableReader->phone = "0911111111";
+    if (helperReaders[1].phone != "0911111111") {
+        return fail("getReaderById pointer should update the vector item");
+    }
+
+    if (getReaderById(helperReaders, 9999) != nullptr) {
+        return fail("getReaderById should return nullptr when ID is missing");
     }
 
     Reader reader = {2001, "Nguyen Van An", "0901234567"};
@@ -159,6 +191,66 @@ int main() {
     }
     if (!containsText(emptyPhoneOutput, "Phone cannot be empty")) {
         return fail("empty reader phone should print validation message");
+    }
+
+    vector<Reader> updateReaders = {
+        {2001, "Nguyen Van An", "0901234567"},
+        {2002, "Tran Thi Binh", "0902222333"},
+    };
+
+    string updateOutput = runUpdateReaderWithInput(
+        updateReaders,
+        "2001\n"
+        "Nguyen Van An Updated\n"
+        "0911111111\n"
+    );
+    if (updateReaders.size() != 2 ||
+        updateReaders[0].id != 2001 ||
+        updateReaders[0].name != "Nguyen Van An Updated" ||
+        updateReaders[0].phone != "0911111111" ||
+        updateReaders[1].name != "Tran Thi Binh") {
+        return fail("valid Update Reader should update only the selected reader");
+    }
+    if (!containsText(updateOutput, "Reader updated successfully")) {
+        return fail("valid Update Reader should print success message");
+    }
+
+    string missingUpdateOutput = runUpdateReaderWithInput(updateReaders, "9999\n");
+    if (updateReaders.size() != 2 ||
+        updateReaders[0].name != "Nguyen Van An Updated" ||
+        updateReaders[1].name != "Tran Thi Binh") {
+        return fail("missing Update Reader ID should keep readers unchanged");
+    }
+    if (!containsText(missingUpdateOutput, "Reader not found")) {
+        return fail("missing Update Reader ID should print not found message");
+    }
+
+    string emptyUpdateNameOutput = runUpdateReaderWithInput(
+        updateReaders,
+        "2001\n"
+        "\n"
+        "0911111111\n"
+    );
+    if (updateReaders[0].name != "Nguyen Van An Updated" ||
+        updateReaders[0].phone != "0911111111") {
+        return fail("empty update reader name should keep original reader data");
+    }
+    if (!containsText(emptyUpdateNameOutput, "Name cannot be empty")) {
+        return fail("empty update reader name should print validation message");
+    }
+
+    string emptyUpdatePhoneOutput = runUpdateReaderWithInput(
+        updateReaders,
+        "2001\n"
+        "Nguyen Van An Again\n"
+        "\n"
+    );
+    if (updateReaders[0].name != "Nguyen Van An Updated" ||
+        updateReaders[0].phone != "0911111111") {
+        return fail("empty update reader phone should keep original reader data");
+    }
+    if (!containsText(emptyUpdatePhoneOutput, "Phone cannot be empty")) {
+        return fail("empty update reader phone should print validation message");
     }
 
     cout << "PASS: reader management automated checks" << endl;

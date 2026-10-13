@@ -78,12 +78,11 @@ File: `book.cpp`
 
 Function:
 - `getBookById(vector<Book>& books, int id)`.
-- `getBookById(const vector<Book>& books, int id)`.
 - `printBook(const Book& book)`.
 - `addBook(vector<Book>& books)`.
 - `updateBook(vector<Book>& books)`.
 - `deleteBook(vector<Book>& books)`.
-- `searchBook(const vector<Book>& books)`.
+- `searchBook(vector<Book>& books)`.
 - `displayBooks(const vector<Book>& books)`.
 - `sortBooks(vector<Book>& books)`.
 
@@ -116,6 +115,7 @@ số không âm, và chuỗi rỗng.
 File: `reader.cpp`
 
 Function:
+- `getReaderById(vector<Reader>& readers, int id)`.
 - `printReader(const Reader& reader)`.
 - `addReader(vector<Reader>& readers)`.
 - `updateReader(vector<Reader>& readers)`.
@@ -128,8 +128,9 @@ Search hỗ trợ:
 - Search by Name keyword.
 - Search by Phone.
 
+`getReaderById` là helper dùng chung cho các chức năng cần tìm độc giả theo ID.
 `printReader` là helper dùng chung để hiển thị một độc giả theo cùng format.
-`displayReaders` dùng helper này để tránh lặp logic in thông tin độc giả.
+`displayReaders` dùng `printReader` để tránh lặp logic in thông tin độc giả.
 
 ### 3.4 Borrow / Return
 File: `borrow.cpp`

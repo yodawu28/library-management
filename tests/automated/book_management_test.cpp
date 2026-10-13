@@ -51,7 +51,7 @@ string runDeleteBookWithInput(vector<Book>& books, const string& input) {
     return output.str();
 }
 
-string runSearchBookWithInput(const vector<Book>& books, const string& input) {
+string runSearchBookWithInput(vector<Book>& books, const string& input) {
     istringstream inputStream(input);
     ostringstream output;
     streambuf* originalInput = cin.rdbuf(inputStream.rdbuf());
@@ -90,12 +90,11 @@ string captureDisplayBooksOutput(const vector<Book>& books) {
 void verifyBookManagementFunctionsAreLinked() {
     (void)static_cast<bool (*)(int)>(&isNonNegativeNumber);
     (void)static_cast<Book* (*)(vector<Book>&, int)>(&getBookById);
-    (void)static_cast<const Book* (*)(const vector<Book>&, int)>(&getBookById);
     (void)static_cast<void (*)(const Book&)>(&printBook);
     (void)static_cast<void (*)(vector<Book>&)>(&addBook);
     (void)static_cast<void (*)(vector<Book>&)>(&updateBook);
     (void)static_cast<void (*)(vector<Book>&)>(&deleteBook);
-    (void)static_cast<void (*)(const vector<Book>&)>(&searchBook);
+    (void)static_cast<void (*)(vector<Book>&)>(&searchBook);
     (void)static_cast<void (*)(const vector<Book>&)>(&displayBooks);
     (void)static_cast<void (*)(vector<Book>&)>(&sortBooks);
 }
@@ -117,15 +116,10 @@ int main() {
     }
     mutableBook->quantity = 7;
     if (helperBooks[1].quantity != 7) {
-        return fail("getBookById mutable pointer should update the vector item");
+        return fail("getBookById pointer should update the vector item");
     }
 
-    const vector<Book>& constHelperBooks = helperBooks;
-    const Book* readonlyBook = getBookById(constHelperBooks, 1001);
-    if (readonlyBook == nullptr || readonlyBook->author != "Robert C. Martin") {
-        return fail("getBookById should return a matching const book pointer");
-    }
-    if (getBookById(constHelperBooks, 9999) != nullptr) {
+    if (getBookById(helperBooks, 9999) != nullptr) {
         return fail("getBookById should return nullptr when ID is missing");
     }
 

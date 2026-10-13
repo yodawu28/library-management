@@ -14,16 +14,6 @@ Book* getBookById(vector<Book>& books, int id) {
     return nullptr;
 }
 
-const Book* getBookById(const vector<Book>& books, int id) {
-    for (const Book& book : books) {
-        if (book.id == id) {
-            return &book;
-        }
-    }
-
-    return nullptr;
-}
-
 void printBook(const Book& book) {
     cout << "ID: " << book.id << endl;
     cout << "Title: " << book.title << endl;
@@ -159,7 +149,7 @@ void deleteBook(vector<Book>& books) {
     cout << "Book not found." << endl;
 }
 
-void searchBook(const vector<Book>& books) {
+void searchBook(vector<Book>& books) {
     int choice;
 
     cout << "Search Book" << endl;
@@ -187,7 +177,7 @@ void searchBook(const vector<Book>& books) {
             return;
         }
 
-        const Book* book = getBookById(books, id);
+        Book* book = getBookById(books, id);
         if (book == nullptr) {
             cout << "Book not found." << endl;
             return;

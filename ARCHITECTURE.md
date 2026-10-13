@@ -59,7 +59,7 @@ The current architecture is function-module based rather than class/OOP based.
 | --- | --- |
 | Validation Helpers | `isPositiveId`, `isNonNegativeNumber`, `isEmptyText` in the Validation Helpers section of `library.h` |
 | Book Management | `getBookById`, `printBook`, `addBook`, `updateBook`, `deleteBook`, `searchBook`, `displayBooks`, `sortBooks` in the Book Management section of `library.h` |
-| Reader Management | `printReader`, `addReader`, `updateReader`, `deleteReader`, `searchReader`, `displayReaders` in the Reader Management section of `library.h` |
+| Reader Management | `getReaderById`, `printReader`, `addReader`, `updateReader`, `deleteReader`, `searchReader`, `displayReaders` in the Reader Management section of `library.h` |
 | Borrow / Return | `borrowBook`, `returnBook` in the Borrow / Return section of `library.h` |
 | File I/O | `saveBooks`, `loadBooks`, `saveReaders`, `loadReaders`, `saveBorrowRecords`, `loadBorrowRecords` in the File I/O section of `library.h` |
 | Menu / Integration | `bookMenu`, `readerMenu`, `mainMenu` in the Menu section of `library.h` |

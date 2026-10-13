@@ -101,7 +101,18 @@ Sort hỗ trợ:
 Hàm trả về con trỏ đến `Book` nếu tìm thấy, hoặc `nullptr` nếu không tìm thấy.
 `printBook` là helper dùng chung để hiển thị một quyển sách theo cùng format.
 
-### 3.2 Reader Management
+### 3.2 Validation Helpers
+File: `validation.cpp`
+
+Function:
+- `isPositiveId(int id)`.
+- `isNonNegativeNumber(int number)`.
+- `isEmptyText(const string& text)`.
+
+Các helper này dùng chung cho Book và Reader để tránh lặp validation ID dương,
+số không âm, và chuỗi rỗng.
+
+### 3.3 Reader Management
 File: `reader.cpp`
 
 Function:
@@ -120,7 +131,7 @@ Search hỗ trợ:
 `printReader` là helper dùng chung để hiển thị một độc giả theo cùng format.
 `displayReaders` dùng helper này để tránh lặp logic in thông tin độc giả.
 
-### 3.3 Borrow / Return
+### 3.4 Borrow / Return
 File: `borrow.cpp`
 
 Function:
@@ -131,7 +142,7 @@ Business rules:
 - Borrow cần kiểm tra reader, book, quantity và record đang mượn.
 - Return cần tìm record đang `BORROWED`, sau đó chuyển sang `RETURNED`.
 
-### 3.4 File I/O
+### 3.5 File I/O
 File: `file.cpp`
 
 Function:
@@ -147,7 +158,7 @@ File dữ liệu:
 - `data/readers.dat`.
 - `data/borrow_records.dat`.
 
-### 3.5 User Interface
+### 3.6 User Interface
 File: `main.cpp`
 
 Function:

@@ -29,6 +29,16 @@ struct BorrowRecord {
     int status;
 };
 
+// ====================
+// Validation Helpers
+// ====================
+
+bool isPositiveId(int id);
+
+bool isNonNegativeNumber(int number);
+
+bool isEmptyText(const string& text);
+
 
 // ====================
 // Book Management

@@ -11,8 +11,9 @@ Current source files:
 | Area | Files | Status |
 | --- | --- | --- |
 | Shared contract | `library.h` | Defines all data structures and public function signatures |
+| Validation helpers | `validation.cpp` | Implements reusable `isPositiveId`, `isNonNegativeNumber`, and `isEmptyText` helpers |
 | Book module | `book.cpp` | Implemented for Sprint 2.0: add, update, delete, search, display, sort, `getBookById`, and `printBook` |
-| Reader module | `reader.cpp` | Sprint 3.0 in progress: `printReader` and `displayReaders` implemented; add, update, delete, and search pending |
+| Reader module | `reader.cpp` | Sprint 3.0 in progress: `printReader`, `addReader`, and `displayReaders` implemented; update, delete, and search pending |
 | Borrow / Return module | `borrow.cpp` | Present, pending Sprint 4.0 implementation |
 | File I/O module | `file.cpp` | Present, pending Sprint 5.0 implementation |
 | UI / Integration | `main.cpp` | Present, pending Sprint 6.0 implementation |
@@ -20,14 +21,15 @@ Current source files:
 | Data fixtures | `data/*.dat` | Present, currently empty |
 
 Sprint 2.0 has completed Book Management in `book.cpp`. Sprint 3.0 has started
-Reader Management in `reader.cpp` with `printReader` and `displayReaders`; the
-remaining Reader functions plus `main.cpp`, `borrow.cpp`, and `file.cpp` are
-still pending, so the bottleneck analysis below separates confirmed
-implemented behavior from future module risks.
+Reader Management in `reader.cpp` with `printReader`, `addReader`, and
+`displayReaders`. The shared `validation.cpp` helper module now owns simple ID,
+non-negative number, and empty-text checks. The remaining Reader functions plus `main.cpp`,
+`borrow.cpp`, and `file.cpp` are still pending, so the bottleneck analysis
+below separates confirmed implemented behavior from future module risks.
 
 ## 2. Confirmed Data Model
 
-`library.h` is the current source-of-truth contract. It uses `std::vector` and `std::string` as the core collection/text model (`library.h:4-5`), and places the C++ standard library into global scope with `using namespace std` (`library.h:7`).
+`library.h` is the current source-of-truth contract. It uses `std::vector` and `std::string` as the core collection/text model, and places the C++ standard library into global scope with `using namespace std`.
 
 ```cpp
 struct Book {
@@ -38,7 +40,7 @@ struct Book {
 };
 ```
 
-Evidence: `Book` is defined in `library.h:12-17`, `Reader` in `library.h:20-24`, and `BorrowRecord` in `library.h:26-30`.
+Evidence: `Book`, `Reader`, and `BorrowRecord` are defined in the Data Structures section of `library.h`.
 
 Borrow status is represented by integer constants:
 
@@ -47,7 +49,7 @@ const int BORROWED = 1;
 const int RETURNED = 0;
 ```
 
-Evidence: `library.h:9-10`.
+Evidence: `BORROWED` and `RETURNED` are defined near the top of `library.h`.
 
 ## 3. Module Contract
 
@@ -55,11 +57,12 @@ The current architecture is function-module based rather than class/OOP based.
 
 | Module | Contract Evidence |
 | --- | --- |
+| Validation Helpers | `isPositiveId`, `isNonNegativeNumber`, `isEmptyText` in the Validation Helpers section of `library.h` |
 | Book Management | `getBookById`, `printBook`, `addBook`, `updateBook`, `deleteBook`, `searchBook`, `displayBooks`, `sortBooks` in the Book Management section of `library.h` |
 | Reader Management | `printReader`, `addReader`, `updateReader`, `deleteReader`, `searchReader`, `displayReaders` in the Reader Management section of `library.h` |
-| Borrow / Return | `borrowBook`, `returnBook` in `library.h:67-76` |
-| File I/O | `saveBooks`, `loadBooks`, `saveReaders`, `loadReaders`, `saveBorrowRecords`, `loadBorrowRecords` in `library.h:82-96` |
-| Menu / Integration | `bookMenu`, `readerMenu`, `mainMenu` in `library.h:102-110` |
+| Borrow / Return | `borrowBook`, `returnBook` in the Borrow / Return section of `library.h` |
+| File I/O | `saveBooks`, `loadBooks`, `saveReaders`, `loadReaders`, `saveBorrowRecords`, `loadBorrowRecords` in the File I/O section of `library.h` |
+| Menu / Integration | `bookMenu`, `readerMenu`, `mainMenu` in the Menu section of `library.h` |
 
 ## 4. System Layout
 
@@ -69,6 +72,7 @@ flowchart TD
     Main[main.cpp\nmainMenu]
     Book[book.cpp\nBook Management]
     Reader[reader.cpp\nReader Management]
+    Validation[validation.cpp\nValidation Helpers]
     Borrow[borrow.cpp\nBorrow / Return]
     File[file.cpp\nFile I/O]
     Header[library.h\nShared Data + Function Contract]
@@ -82,10 +86,13 @@ flowchart TD
 
     Book --> Header
     Reader --> Header
+    Validation --> Header
     Borrow --> Header
     File --> Header
     Main --> Header
 
+    Book --> Validation
+    Reader --> Validation
     File <--> Data
     Borrow --> Book
     Borrow --> Reader
@@ -172,7 +179,7 @@ sequenceDiagram
 
 ### P1 - Linear Search Will Become the Main Runtime Cost
 
-The contract stores entities in `vector<Book>`, `vector<Reader>`, and `vector<BorrowRecord>` by passing vectors through module functions (`library.h:37-47`, `library.h:53-61`, `library.h:67-76`). If implemented with simple loops, ID lookup, duplicate checks, borrow validation, search, and return lookup will be O(n). This is acceptable for a course-scale console project, but it is the clearest future performance bottleneck.
+The contract stores entities in `vector<Book>`, `vector<Reader>`, and `vector<BorrowRecord>` by passing vectors through module functions declared in `library.h`. If implemented with simple loops, ID lookup, duplicate checks, borrow validation, search, and return lookup will be O(n). This is acceptable for a course-scale console project, but it is the clearest future performance bottleneck.
 
 Recommendation:
 - For the current assignment, keep vector loops because they are easy to explain.
@@ -180,7 +187,7 @@ Recommendation:
 
 ### P2 - Borrow / Return Depends on Cross-Vector Consistency
 
-`borrowBook` receives books, readers, and records together (`library.h:67-71`), while `returnBook` receives books and records (`library.h:73-76`). This makes the borrow module the main consistency boundary. Bugs here can create mismatches such as a returned record without restoring quantity or duplicate active borrow records.
+`borrowBook` receives books, readers, and records together, while `returnBook` receives books and records. This makes the borrow module the main consistency boundary. Bugs here can create mismatches such as a returned record without restoring quantity or duplicate active borrow records.
 
 Recommendation:
 - Centralize checks for active borrow records inside `borrow.cpp`.
@@ -188,7 +195,7 @@ Recommendation:
 
 ### P3 - File I/O Can Become a User-Visible Latency Point
 
-The contract has whole-collection save/load functions for books, readers, and borrow records (`library.h:82-96`). If every menu operation saves all vectors synchronously, console actions may become slower as data grows. With small course data this is fine; the risk appears if save is called too often.
+The contract has whole-collection save/load functions for books, readers, and borrow records. If every menu operation saves all vectors synchronously, console actions may become slower as data grows. With small course data this is fine; the risk appears if save is called too often.
 
 Recommendation:
 - Load once at startup.
@@ -219,7 +226,7 @@ Recommendation:
 
 ### P6 - Header Pollutes Global Namespace
 
-`library.h` uses `using namespace std` at global header scope (`library.h:7`). This is not a performance bottleneck, but it is a maintainability risk because every file that includes the header inherits the entire `std` namespace.
+`library.h` uses `using namespace std` at global header scope. This is not a performance bottleneck, but it is a maintainability risk because every file that includes the header inherits the entire `std` namespace.
 
 Recommendation:
 - For a small course project, this can remain if the team prioritizes beginner readability.
@@ -227,7 +234,7 @@ Recommendation:
 
 ### P7 - Status Uses Raw Integers
 
-Borrow status uses `const int BORROWED = 1` and `const int RETURNED = 0` (`library.h:9-10`), and `BorrowRecord.status` is an `int` (`library.h:26-30`). This is simple, but it allows invalid states such as `status = 2`.
+Borrow status uses `const int BORROWED = 1` and `const int RETURNED = 0`, and `BorrowRecord.status` is an `int`. This is simple, but it allows invalid states such as `status = 2`.
 
 Recommendation:
 - Keep constants for now because they are easy to explain.

@@ -44,7 +44,7 @@ void addBook(vector<Book>& books) {
     }
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    if (book.id <= 0) {
+    if (!isPositiveId(book.id)) {
         cout << "Book ID must be positive." << endl;
         return;
     }
@@ -56,14 +56,14 @@ void addBook(vector<Book>& books) {
 
     cout << "Enter title: ";
     getline(cin, book.title);
-    if (book.title.empty()) {
+    if (isEmptyText(book.title)) {
         cout << "Title cannot be empty." << endl;
         return;
     }
 
     cout << "Enter author: ";
     getline(cin, book.author);
-    if (book.author.empty()) {
+    if (isEmptyText(book.author)) {
         cout << "Author cannot be empty." << endl;
         return;
     }
@@ -76,7 +76,7 @@ void addBook(vector<Book>& books) {
         return;
     }
 
-    if (book.quantity < 0) {
+    if (!isNonNegativeNumber(book.quantity)) {
         cout << "Quantity cannot be negative." << endl;
         return;
     }
@@ -107,14 +107,14 @@ void updateBook(vector<Book>& books) {
 
     cout << "Enter new title: ";
     getline(cin, updatedBook.title);
-    if (updatedBook.title.empty()) {
+    if (isEmptyText(updatedBook.title)) {
         cout << "Title cannot be empty." << endl;
         return;
     }
 
     cout << "Enter new author: ";
     getline(cin, updatedBook.author);
-    if (updatedBook.author.empty()) {
+    if (isEmptyText(updatedBook.author)) {
         cout << "Author cannot be empty." << endl;
         return;
     }
@@ -127,7 +127,7 @@ void updateBook(vector<Book>& books) {
         return;
     }
 
-    if (updatedBook.quantity < 0) {
+    if (!isNonNegativeNumber(updatedBook.quantity)) {
         cout << "Quantity cannot be negative." << endl;
         return;
     }
@@ -208,7 +208,7 @@ void searchBook(const vector<Book>& books) {
         }
 
         getline(cin, keyword);
-        if (keyword.empty()) {
+        if (isEmptyText(keyword)) {
             cout << "Keyword cannot be empty." << endl;
             return;
         }

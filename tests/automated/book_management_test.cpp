@@ -88,6 +88,7 @@ string captureDisplayBooksOutput(const vector<Book>& books) {
 }
 
 void verifyBookManagementFunctionsAreLinked() {
+    (void)static_cast<bool (*)(int)>(&isNonNegativeNumber);
     (void)static_cast<Book* (*)(vector<Book>&, int)>(&getBookById);
     (void)static_cast<const Book* (*)(const vector<Book>&, int)>(&getBookById);
     (void)static_cast<void (*)(const Book&)>(&printBook);
@@ -101,6 +102,10 @@ void verifyBookManagementFunctionsAreLinked() {
 
 int main() {
     verifyBookManagementFunctionsAreLinked();
+
+    if (!isNonNegativeNumber(0) || !isNonNegativeNumber(5) || isNonNegativeNumber(-1)) {
+        return fail("isNonNegativeNumber should accept zero and positive numbers only");
+    }
 
     vector<Book> helperBooks = {
         {1001, "Clean Code", "Robert C. Martin", 3},

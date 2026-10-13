@@ -17,7 +17,7 @@ CXX_BIN="${CXX:-c++}"
 command -v "$CXX_BIN" >/dev/null 2>&1 || fail "C++ compiler not found: $CXX_BIN"
 
 HEADER="library.h"
-SOURCES=(main.cpp book.cpp reader.cpp borrow.cpp file.cpp)
+SOURCES=(main.cpp book.cpp reader.cpp borrow.cpp file.cpp validation.cpp)
 DATA_FILES=(data/books.dat data/readers.dat data/borrow_records.dat)
 TEST_SOURCES=(
   tests/automated/book_management_test.cpp
@@ -55,6 +55,10 @@ fi
 
 if grep -q "implementation files are empty" ARCHITECTURE.md; then
   fail "ARCHITECTURE.md still says implementation files are empty"
+fi
+
+if grep -Eq "library\.h:[0-9]" ARCHITECTURE.md; then
+  fail "ARCHITECTURE.md uses fragile library.h line references"
 fi
 
 if grep -q "nếu sau này nhóm thêm test tự động" README.md; then
@@ -100,14 +104,14 @@ note "running header compile check"
 "$TMP_DIR/header_check" || fail "header compile check failed"
 
 note "building book management automated test"
-"$CXX_BIN" "${CXXFLAGS[@]}" -I. tests/automated/book_management_test.cpp book.cpp -o "$TMP_DIR/book_management_test" ||
+"$CXX_BIN" "${CXXFLAGS[@]}" -I. tests/automated/book_management_test.cpp book.cpp validation.cpp -o "$TMP_DIR/book_management_test" ||
   fail "book management automated test build failed"
 
 note "running book management automated test"
 "$TMP_DIR/book_management_test" || fail "book management automated test failed"
 
 note "building reader management automated test"
-"$CXX_BIN" "${CXXFLAGS[@]}" -I. tests/automated/reader_management_test.cpp reader.cpp -o "$TMP_DIR/reader_management_test" ||
+"$CXX_BIN" "${CXXFLAGS[@]}" -I. tests/automated/reader_management_test.cpp reader.cpp validation.cpp -o "$TMP_DIR/reader_management_test" ||
   fail "reader management automated test build failed"
 
 note "running reader management automated test"

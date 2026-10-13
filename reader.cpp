@@ -121,6 +121,81 @@ void deleteReader(vector<Reader>& readers) {
     cout << "Reader not found." << endl;
 }
 
+void searchReader(const vector<Reader>& readers) {
+    int choice;
+
+    cout << "Search Reader" << endl;
+    cout << "1. Search by ID" << endl;
+    cout << "2. Search by Name" << endl;
+    cout << "3. Search by Phone" << endl;
+    cout << "Enter your choice: ";
+
+    if (!(cin >> choice)) {
+        cout << "Invalid search choice." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+    if (choice == 1) {
+        int id;
+
+        cout << "Enter reader ID: ";
+        if (!(cin >> id)) {
+            cout << "Invalid reader ID." << endl;
+            cin.clear();
+            cin.ignore(numeric_limits<streamsize>::max(), '\n');
+            return;
+        }
+
+        for (const Reader& reader : readers) {
+            if (reader.id == id) {
+                printReader(reader);
+                return;
+            }
+        }
+
+        cout << "Reader not found." << endl;
+        return;
+    }
+
+    if (choice == 2 || choice == 3) {
+        string keyword;
+        bool found = false;
+
+        if (choice == 2) {
+            cout << "Enter name keyword: ";
+        } else {
+            cout << "Enter phone: ";
+        }
+
+        getline(cin, keyword);
+        if (isEmptyText(keyword)) {
+            cout << "Keyword cannot be empty." << endl;
+            return;
+        }
+
+        for (const Reader& reader : readers) {
+            bool matchesName = choice == 2 && reader.name.find(keyword) != string::npos;
+            bool matchesPhone = choice == 3 && reader.phone.find(keyword) != string::npos;
+
+            if (matchesName || matchesPhone) {
+                printReader(reader);
+                found = true;
+            }
+        }
+
+        if (!found) {
+            cout << "No matching readers found." << endl;
+        }
+
+        return;
+    }
+
+    cout << "Invalid search choice." << endl;
+}
+
 void displayReaders(const vector<Reader>& readers) {
     if (readers.empty()) {
         cout << "No readers available." << endl;

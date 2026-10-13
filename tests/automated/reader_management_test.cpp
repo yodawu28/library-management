@@ -71,6 +71,19 @@ string runDeleteReaderWithInput(vector<Reader>& readers, const string& input) {
     return output.str();
 }
 
+string runSearchReaderWithInput(const vector<Reader>& readers, const string& input) {
+    istringstream inputStream(input);
+    ostringstream output;
+    streambuf* originalInput = cin.rdbuf(inputStream.rdbuf());
+    streambuf* originalOutput = cout.rdbuf(output.rdbuf());
+
+    searchReader(readers);
+
+    cin.rdbuf(originalInput);
+    cout.rdbuf(originalOutput);
+    return output.str();
+}
+
 void verifyReaderManagementFunctionsAreLinked() {
     (void)static_cast<bool (*)(int)>(&isPositiveId);
     (void)static_cast<bool (*)(const string&)>(&isEmptyText);
@@ -79,6 +92,7 @@ void verifyReaderManagementFunctionsAreLinked() {
     (void)static_cast<void (*)(vector<Reader>&)>(&addReader);
     (void)static_cast<void (*)(vector<Reader>&)>(&updateReader);
     (void)static_cast<void (*)(vector<Reader>&)>(&deleteReader);
+    (void)static_cast<void (*)(const vector<Reader>&)>(&searchReader);
     (void)static_cast<void (*)(const vector<Reader>&)>(&displayReaders);
 }
 
@@ -301,6 +315,62 @@ int main() {
     }
     if (!containsText(invalidDeleteInputOutput, "Invalid reader ID")) {
         return fail("invalid Delete Reader input should print validation message");
+    }
+
+    vector<Reader> searchReaders = {
+        {2001, "Nguyen Van An", "0901234567"},
+        {2002, "Tran Thi Binh", "0902222333"},
+        {2003, "Le Van Cuong", "0903333444"},
+    };
+
+    string searchByIdOutput = runSearchReaderWithInput(searchReaders, "1\n2002\n");
+    if (!containsText(searchByIdOutput, "ID: 2002") ||
+        !containsText(searchByIdOutput, "Name: Tran Thi Binh") ||
+        containsText(searchByIdOutput, "Name: Nguyen Van An")) {
+        return fail("Search Reader by ID should print only the matching reader");
+    }
+
+    string searchByNameOutput = runSearchReaderWithInput(searchReaders, "2\nVan\n");
+    if (!containsText(searchByNameOutput, "Name: Nguyen Van An") ||
+        !containsText(searchByNameOutput, "Name: Le Van Cuong") ||
+        containsText(searchByNameOutput, "Name: Tran Thi Binh")) {
+        return fail("Search Reader by name keyword should print only matching readers");
+    }
+
+    string searchByPhoneOutput = runSearchReaderWithInput(searchReaders, "3\n090222\n");
+    if (!containsText(searchByPhoneOutput, "Phone: 0902222333") ||
+        containsText(searchByPhoneOutput, "Phone: 0901234567")) {
+        return fail("Search Reader by phone should print only matching readers");
+    }
+
+    string missingSearchOutput = runSearchReaderWithInput(searchReaders, "2\nUnknown\n");
+    if (!containsText(missingSearchOutput, "No matching readers found")) {
+        return fail("Search Reader with no keyword matches should print not-found message");
+    }
+
+    string missingSearchIdOutput = runSearchReaderWithInput(searchReaders, "1\n9999\n");
+    if (!containsText(missingSearchIdOutput, "Reader not found")) {
+        return fail("Search Reader by missing ID should print not-found message");
+    }
+
+    string invalidSearchChoiceOutput = runSearchReaderWithInput(searchReaders, "9\n");
+    if (!containsText(invalidSearchChoiceOutput, "Invalid search choice")) {
+        return fail("invalid Search Reader choice should print validation message");
+    }
+
+    string invalidSearchChoiceTypeOutput = runSearchReaderWithInput(searchReaders, "abc\n");
+    if (!containsText(invalidSearchChoiceTypeOutput, "Invalid search choice")) {
+        return fail("non-numeric Search Reader choice should print validation message");
+    }
+
+    string invalidSearchIdTypeOutput = runSearchReaderWithInput(searchReaders, "1\nabc\n");
+    if (!containsText(invalidSearchIdTypeOutput, "Invalid reader ID")) {
+        return fail("non-numeric Search Reader ID should print validation message");
+    }
+
+    string emptySearchKeywordOutput = runSearchReaderWithInput(searchReaders, "2\n\n");
+    if (!containsText(emptySearchKeywordOutput, "Keyword cannot be empty")) {
+        return fail("empty Search Reader keyword should print validation message");
     }
 
     cout << "PASS: reader management automated checks" << endl;

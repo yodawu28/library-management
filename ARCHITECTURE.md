@@ -13,19 +13,20 @@ Current source files:
 | Shared contract | `library.h` | Defines all data structures and public function signatures |
 | Validation helpers | `validation.cpp` | Implements reusable `isPositiveId`, `isNonNegativeNumber`, and `isEmptyText` helpers |
 | Book module | `book.cpp` | Implemented for Sprint 2.0: add, update, delete, search, display, sort, `getBookById`, and `printBook` |
-| Reader module | `reader.cpp` | Sprint 3.0 in progress: `printReader`, `addReader`, and `displayReaders` implemented; update, delete, and search pending |
+| Reader module | `reader.cpp` | Implemented for Sprint 3.0: add, update, delete, search, display, `getReaderById`, and `printReader` |
 | Borrow / Return module | `borrow.cpp` | Present, pending Sprint 4.0 implementation |
 | File I/O module | `file.cpp` | Present, pending Sprint 5.0 implementation |
 | UI / Integration | `main.cpp` | Present, pending Sprint 6.0 implementation |
 | Verification | `scripts/verify.sh` | Active deterministic syntax/header checks, architecture freshness checks, Book Management automated checks, and Reader Management automated checks |
 | Data fixtures | `data/*.dat` | Present, currently empty |
 
-Sprint 2.0 has completed Book Management in `book.cpp`. Sprint 3.0 has started
-Reader Management in `reader.cpp` with `printReader`, `addReader`, and
-`displayReaders`. The shared `validation.cpp` helper module now owns simple ID,
-non-negative number, and empty-text checks. The remaining Reader functions plus `main.cpp`,
-`borrow.cpp`, and `file.cpp` are still pending, so the bottleneck analysis
-below separates confirmed implemented behavior from future module risks.
+Sprint 2.0 has completed Book Management in `book.cpp`. Sprint 3.0 has
+completed Reader Management in `reader.cpp`, including add, update, delete,
+search, display, `getReaderById`, and `printReader`. The shared
+`validation.cpp` helper module owns simple ID, non-negative number, and
+empty-text checks. `main.cpp`, `borrow.cpp`, and `file.cpp` are still pending,
+so the bottleneck analysis below separates confirmed implemented behavior from
+future module risks.
 
 ## 2. Confirmed Data Model
 
@@ -214,10 +215,10 @@ Recommendation:
 
 `scripts/verify.sh` checks each source file with `-fsyntax-only`, builds a
 header compile check, checks documentation freshness for known architecture
-drift, and builds/runs the Book Management automated regression check. This
-catches Book Management link errors, but it still does not link the future full
-application because `main.cpp`, `reader.cpp`, `borrow.cpp`, and `file.cpp` are
-not implemented yet.
+drift, and builds/runs the Book Management and Reader Management automated
+regression checks. This catches Book and Reader module link errors, but it still
+does not link the future full application because `main.cpp`, `borrow.cpp`, and
+`file.cpp` are not implemented yet.
 
 Recommendation:
 - Keep adding focused module regression checks as each module is implemented.

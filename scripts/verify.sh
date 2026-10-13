@@ -57,6 +57,22 @@ if grep -q "implementation files are empty" ARCHITECTURE.md; then
   fail "ARCHITECTURE.md still says implementation files are empty"
 fi
 
+if grep -q "update, delete, and search pending" ARCHITECTURE.md; then
+  fail "ARCHITECTURE.md still says Reader update/delete/search are pending"
+fi
+
+if grep -q "Sprint 3.0 has started" ARCHITECTURE.md; then
+  fail "ARCHITECTURE.md still says Sprint 3.0 has only started"
+fi
+
+if grep -q "builds/runs the Book Management automated regression check" ARCHITECTURE.md; then
+  fail "ARCHITECTURE.md omits Reader Management automated regression check"
+fi
+
+if grep -q "reader.cpp.*not implemented yet" ARCHITECTURE.md; then
+  fail "ARCHITECTURE.md still says reader.cpp is not implemented"
+fi
+
 if grep -Eq "library\.h:[0-9]" ARCHITECTURE.md; then
   fail "ARCHITECTURE.md uses fragile library.h line references"
 fi

@@ -50,6 +50,11 @@ string runBorrowBookTwiceWithInput(
 }
 
 void verifyBorrowManagementFunctionsAreLinked() {
+    (void)static_cast<BorrowRecord* (*)(
+        vector<BorrowRecord>&,
+        int,
+        int
+    )>(&getActiveBorrowRecord);
     (void)static_cast<void (*)(
         vector<Book>&,
         vector<Reader>&,
@@ -59,6 +64,23 @@ void verifyBorrowManagementFunctionsAreLinked() {
 
 int main() {
     verifyBorrowManagementFunctionsAreLinked();
+
+    vector<BorrowRecord> helperRecords = {
+        {1001, 2001, RETURNED},
+        {1001, 2001, BORROWED},
+        {1002, 2001, BORROWED},
+    };
+    BorrowRecord* activeRecord = getActiveBorrowRecord(helperRecords, 2001, 1001);
+    if (activeRecord == nullptr || activeRecord->status != BORROWED) {
+        return fail("getActiveBorrowRecord should return matching BORROWED record");
+    }
+    activeRecord->status = RETURNED;
+    if (helperRecords[1].status != RETURNED) {
+        return fail("getActiveBorrowRecord pointer should update the vector item");
+    }
+    if (getActiveBorrowRecord(helperRecords, 2001, 1001) != nullptr) {
+        return fail("getActiveBorrowRecord should ignore returned records");
+    }
 
     vector<Book> books = {
         {1001, "Clean Code", "Robert C. Martin", 2},
@@ -142,6 +164,103 @@ int main() {
     if (!containsText(invalidBookOutput, "Invalid book ID") ||
         !containsText(invalidBookOutput, "Book borrowed successfully")) {
         return fail("invalid book ID recovery should print error then success");
+    }
+
+    vector<Book> missingReaderBooks = {
+        {1004, "Design Patterns", "Erich Gamma", 2},
+    };
+    vector<Reader> missingReaderReaders = {
+        {2004, "Pham Thi Dung", "0904444555"},
+    };
+    vector<BorrowRecord> missingReaderRecords;
+    string missingReaderOutput = runBorrowBookWithInput(
+        missingReaderBooks,
+        missingReaderReaders,
+        missingReaderRecords,
+        "9999\n"
+    );
+    if (!missingReaderRecords.empty()) {
+        return fail("missing Reader should not create borrow record");
+    }
+    if (missingReaderBooks[0].quantity != 2) {
+        return fail("missing Reader should not change book quantity");
+    }
+    if (!containsText(missingReaderOutput, "Reader not found")) {
+        return fail("missing Reader should print not found message");
+    }
+
+    vector<Book> missingBookBooks = {
+        {1005, "Refactoring", "Martin Fowler", 2},
+    };
+    vector<Reader> missingBookReaders = {
+        {2005, "Hoang Van Em", "0905555666"},
+    };
+    vector<BorrowRecord> missingBookRecords;
+    string missingBookOutput = runBorrowBookWithInput(
+        missingBookBooks,
+        missingBookReaders,
+        missingBookRecords,
+        "2005\n"
+        "9999\n"
+    );
+    if (!missingBookRecords.empty()) {
+        return fail("missing Book should not create borrow record");
+    }
+    if (missingBookBooks[0].quantity != 2) {
+        return fail("missing Book should not change book quantity");
+    }
+    if (!containsText(missingBookOutput, "Book not found")) {
+        return fail("missing Book should print not found message");
+    }
+
+    vector<Book> unavailableBooks = {
+        {1006, "Domain-Driven Design", "Eric Evans", 0},
+    };
+    vector<Reader> unavailableReaders = {
+        {2006, "Do Thi Giang", "0906666777"},
+    };
+    vector<BorrowRecord> unavailableRecords;
+    string unavailableOutput = runBorrowBookWithInput(
+        unavailableBooks,
+        unavailableReaders,
+        unavailableRecords,
+        "2006\n"
+        "1006\n"
+    );
+    if (!unavailableRecords.empty()) {
+        return fail("unavailable Book should not create borrow record");
+    }
+    if (unavailableBooks[0].quantity != 0) {
+        return fail("unavailable Book should keep quantity unchanged");
+    }
+    if (!containsText(unavailableOutput, "Book is unavailable")) {
+        return fail("unavailable Book should print unavailable message");
+    }
+
+    vector<Book> duplicateBooks = {
+        {1007, "Effective C++", "Scott Meyers", 2},
+    };
+    vector<Reader> duplicateReaders = {
+        {2007, "Bui Van Hung", "0907777888"},
+    };
+    vector<BorrowRecord> duplicateRecords = {
+        {1007, 2007, BORROWED},
+    };
+    string duplicateOutput = runBorrowBookWithInput(
+        duplicateBooks,
+        duplicateReaders,
+        duplicateRecords,
+        "2007\n"
+        "1007\n"
+    );
+    if (duplicateRecords.size() != 1) {
+        return fail("duplicate active borrow should not create another record");
+    }
+    if (duplicateBooks[0].quantity != 2) {
+        return fail("duplicate active borrow should keep quantity unchanged");
+    }
+    if (!containsText(duplicateOutput, "Reader already borrowed this book")) {
+        return fail("duplicate active borrow should print duplicate message");
     }
 
     cout << "PASS: borrow management automated checks" << endl;

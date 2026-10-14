@@ -136,12 +136,15 @@ Search hỗ trợ:
 File: `borrow.cpp`
 
 Function:
+- `getActiveBorrowRecord(vector<BorrowRecord>& records, int readerId, int bookId)`.
 - `borrowBook(vector<Book>& books, vector<Reader>& readers, vector<BorrowRecord>& records)`.
 - `returnBook(vector<Book>& books, vector<BorrowRecord>& records)`.
 
 Business rules:
 - Borrow cần kiểm tra reader, book, quantity và record đang mượn.
 - Borrow dùng lại `getReaderById` và `getBookById` để tránh lặp logic tìm ID.
+- Borrow và Return dùng lại `getActiveBorrowRecord` để tìm bản ghi mượn đang
+  active theo Reader ID và Book ID.
 - Return cần tìm record đang `BORROWED`, sau đó chuyển sang `RETURNED`.
 
 ### 3.5 File I/O

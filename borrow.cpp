@@ -3,6 +3,22 @@
 #include <iostream>
 #include <limits>
 
+BorrowRecord* getActiveBorrowRecord(
+    vector<BorrowRecord>& records,
+    int readerId,
+    int bookId
+) {
+    for (BorrowRecord& record : records) {
+        if (record.readerId == readerId &&
+            record.bookId == bookId &&
+            record.status == BORROWED) {
+            return &record;
+        }
+    }
+
+    return nullptr;
+}
+
 void borrowBook(
     vector<Book>& books,
     vector<Reader>& readers,
@@ -40,6 +56,11 @@ void borrowBook(
 
     if (book->quantity <= 0) {
         cout << "Book is unavailable." << endl;
+        return;
+    }
+
+    if (getActiveBorrowRecord(records, readerId, bookId) != nullptr) {
+        cout << "Reader already borrowed this book." << endl;
         return;
     }
 

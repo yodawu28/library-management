@@ -82,6 +82,12 @@ void displayReaders(const vector<Reader>& readers);
 // Borrow / Return
 // ====================
 
+BorrowRecord* getActiveBorrowRecord(
+    vector<BorrowRecord>& records,
+    int readerId,
+    int bookId
+);
+
 void borrowBook(
     vector<Book>& books,
     vector<Reader>& readers,

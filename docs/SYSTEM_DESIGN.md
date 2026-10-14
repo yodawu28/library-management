@@ -136,11 +136,12 @@ Search hỗ trợ:
 File: `borrow.cpp`
 
 Function:
-- `borrowBook(vector<Book>& books, const vector<Reader>& readers, vector<BorrowRecord>& records)`.
+- `borrowBook(vector<Book>& books, vector<Reader>& readers, vector<BorrowRecord>& records)`.
 - `returnBook(vector<Book>& books, vector<BorrowRecord>& records)`.
 
 Business rules:
 - Borrow cần kiểm tra reader, book, quantity và record đang mượn.
+- Borrow dùng lại `getReaderById` và `getBookById` để tránh lặp logic tìm ID.
 - Return cần tìm record đang `BORROWED`, sau đó chuyển sang `RETURNED`.
 
 ### 3.5 File I/O

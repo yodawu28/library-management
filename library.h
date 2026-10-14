@@ -84,7 +84,7 @@ void displayReaders(const vector<Reader>& readers);
 
 void borrowBook(
     vector<Book>& books,
-    const vector<Reader>& readers,
+    vector<Reader>& readers,
     vector<BorrowRecord>& records
 );
 

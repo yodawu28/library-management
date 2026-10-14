@@ -22,6 +22,7 @@ DATA_FILES=(data/books.dat data/readers.dat data/borrow_records.dat)
 TEST_SOURCES=(
   tests/automated/book_management_test.cpp
   tests/automated/reader_management_test.cpp
+  tests/automated/borrow_management_test.cpp
 )
 CXXFLAGS=(-std=c++17 -Wall -Wextra -Werror -pedantic)
 
@@ -132,5 +133,12 @@ note "building reader management automated test"
 
 note "running reader management automated test"
 "$TMP_DIR/reader_management_test" || fail "reader management automated test failed"
+
+note "building borrow management automated test"
+"$CXX_BIN" "${CXXFLAGS[@]}" -I. tests/automated/borrow_management_test.cpp borrow.cpp book.cpp reader.cpp validation.cpp -o "$TMP_DIR/borrow_management_test" ||
+  fail "borrow management automated test build failed"
+
+note "running borrow management automated test"
+"$TMP_DIR/borrow_management_test" || fail "borrow management automated test failed"
 
 note "ACCEPTED: deterministic verification passed"

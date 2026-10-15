@@ -54,14 +54,18 @@ struct BorrowRecord {
     int readerId;
     int status;
 };
+
+struct LibraryData {
+    vector<Book> books;
+    vector<Reader> readers;
+    vector<BorrowRecord> borrowRecords;
+};
 ```
 
 Danh sách dữ liệu:
 
 ```cpp
-vector<Book> books;
-vector<Reader> readers;
-vector<BorrowRecord> borrowRecords;
+LibraryData data;
 ```
 
 Trạng thái mượn/trả:
@@ -137,11 +141,13 @@ File: `borrow.cpp`
 
 Function:
 - `getActiveBorrowRecord(vector<BorrowRecord>& records, int readerId, int bookId)`.
-- `borrowBook(vector<Book>& books, vector<Reader>& readers, vector<BorrowRecord>& records)`.
-- `returnBook(vector<Book>& books, vector<BorrowRecord>& records)`.
+- `borrowBook(LibraryData& data)`.
+- `returnBook(LibraryData& data)`.
 
 Business rules:
 - Borrow cần kiểm tra reader, book, quantity và record đang mượn.
+- Borrow và Return nhận `LibraryData&` vì hai chức năng này cần phối hợp
+  nhiều danh sách dữ liệu cùng lúc.
 - Borrow dùng lại `getReaderById` và `getBookById` để tránh lặp logic tìm ID.
 - Borrow và Return dùng lại `getActiveBorrowRecord` để tìm bản ghi mượn đang
   active theo Reader ID và Book ID.

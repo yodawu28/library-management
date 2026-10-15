@@ -20,9 +20,7 @@ BorrowRecord* getActiveBorrowRecord(
 }
 
 void borrowBook(
-    vector<Book>& books,
-    vector<Reader>& readers,
-    vector<BorrowRecord>& records
+    LibraryData& data
 ) {
     int readerId;
     cout << "Enter reader ID: ";
@@ -33,7 +31,7 @@ void borrowBook(
         return;
     }
 
-    Reader* reader = getReaderById(readers, readerId);
+    Reader* reader = getReaderById(data.readers, readerId);
     if (reader == nullptr) {
         cout << "Reader not found." << endl;
         return;
@@ -48,7 +46,7 @@ void borrowBook(
         return;
     }
 
-    Book* book = getBookById(books, bookId);
+    Book* book = getBookById(data.books, bookId);
     if (book == nullptr) {
         cout << "Book not found." << endl;
         return;
@@ -59,7 +57,7 @@ void borrowBook(
         return;
     }
 
-    if (getActiveBorrowRecord(records, readerId, bookId) != nullptr) {
+    if (getActiveBorrowRecord(data.borrowRecords, readerId, bookId) != nullptr) {
         cout << "Reader already borrowed this book." << endl;
         return;
     }
@@ -69,8 +67,47 @@ void borrowBook(
     record.bookId = bookId;
     record.status = BORROWED;
 
-    records.push_back(record);
+    data.borrowRecords.push_back(record);
     book->quantity--;
 
     cout << "Book borrowed successfully." << endl;
+}
+
+void returnBook(
+    LibraryData& data
+) {
+    int readerId;
+    cout << "Enter reader ID: ";
+    if (!(cin >> readerId)) {
+        cout << "Invalid reader ID." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+
+    int bookId;
+    cout << "Enter book ID: ";
+    if (!(cin >> bookId)) {
+        cout << "Invalid book ID." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        return;
+    }
+
+    BorrowRecord* record = getActiveBorrowRecord(data.borrowRecords, readerId, bookId);
+    if (record == nullptr) {
+        cout << "Borrow record not found." << endl;
+        return;
+    }
+
+    Book* book = getBookById(data.books, bookId);
+    if (book == nullptr) {
+        cout << "Book not found." << endl;
+        return;
+    }
+
+    record->status = RETURNED;
+    book->quantity++;
+
+    cout << "Book returned successfully." << endl;
 }

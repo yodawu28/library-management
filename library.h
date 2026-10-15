@@ -29,6 +29,12 @@ struct BorrowRecord {
     int status;
 };
 
+struct LibraryData {
+    vector<Book> books;
+    vector<Reader> readers;
+    vector<BorrowRecord> borrowRecords;
+};
+
 // ====================
 // Validation Helpers
 // ====================
@@ -89,14 +95,11 @@ BorrowRecord* getActiveBorrowRecord(
 );
 
 void borrowBook(
-    vector<Book>& books,
-    vector<Reader>& readers,
-    vector<BorrowRecord>& records
+    LibraryData& data
 );
 
 void returnBook(
-    vector<Book>& books,
-    vector<BorrowRecord>& records
+    LibraryData& data
 );
 
 // ====================

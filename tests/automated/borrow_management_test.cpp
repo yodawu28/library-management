@@ -13,9 +13,7 @@ bool containsText(const string& text, const string& keyword) {
 }
 
 string runBorrowBookWithInput(
-    vector<Book>& books,
-    vector<Reader>& readers,
-    vector<BorrowRecord>& records,
+    LibraryData& data,
     const string& input
 ) {
     istringstream inputStream(input);
@@ -23,7 +21,7 @@ string runBorrowBookWithInput(
     streambuf* originalInput = cin.rdbuf(inputStream.rdbuf());
     streambuf* originalOutput = cout.rdbuf(output.rdbuf());
 
-    borrowBook(books, readers, records);
+    borrowBook(data);
 
     cin.rdbuf(originalInput);
     cout.rdbuf(originalOutput);
@@ -31,9 +29,7 @@ string runBorrowBookWithInput(
 }
 
 string runBorrowBookTwiceWithInput(
-    vector<Book>& books,
-    vector<Reader>& readers,
-    vector<BorrowRecord>& records,
+    LibraryData& data,
     const string& input
 ) {
     istringstream inputStream(input);
@@ -41,8 +37,24 @@ string runBorrowBookTwiceWithInput(
     streambuf* originalInput = cin.rdbuf(inputStream.rdbuf());
     streambuf* originalOutput = cout.rdbuf(output.rdbuf());
 
-    borrowBook(books, readers, records);
-    borrowBook(books, readers, records);
+    borrowBook(data);
+    borrowBook(data);
+
+    cin.rdbuf(originalInput);
+    cout.rdbuf(originalOutput);
+    return output.str();
+}
+
+string runReturnBookWithInput(
+    LibraryData& data,
+    const string& input
+) {
+    istringstream inputStream(input);
+    ostringstream output;
+    streambuf* originalInput = cin.rdbuf(inputStream.rdbuf());
+    streambuf* originalOutput = cout.rdbuf(output.rdbuf());
+
+    returnBook(data);
 
     cin.rdbuf(originalInput);
     cout.rdbuf(originalOutput);
@@ -56,10 +68,9 @@ void verifyBorrowManagementFunctionsAreLinked() {
         int
     )>(&getActiveBorrowRecord);
     (void)static_cast<void (*)(
-        vector<Book>&,
-        vector<Reader>&,
-        vector<BorrowRecord>&
+        LibraryData&
     )>(&borrowBook);
+    (void)static_cast<void (*)(LibraryData&)>(&returnBook);
 }
 
 int main() {
@@ -82,56 +93,44 @@ int main() {
         return fail("getActiveBorrowRecord should ignore returned records");
     }
 
-    vector<Book> books = {
-        {1001, "Clean Code", "Robert C. Martin", 2},
-    };
-    vector<Reader> readers = {
-        {2001, "Nguyen Van An", "0901234567"},
-    };
-    vector<BorrowRecord> records;
+    LibraryData data;
+    data.books.push_back({1001, "Clean Code", "Robert C. Martin", 2});
+    data.readers.push_back({2001, "Nguyen Van An", "0901234567"});
 
     string borrowOutput = runBorrowBookWithInput(
-        books,
-        readers,
-        records,
+        data,
         "2001\n"
         "1001\n"
     );
 
-    if (records.size() != 1) {
+    if (data.borrowRecords.size() != 1) {
         return fail("valid Borrow Book should create one borrow record");
     }
-    if (records[0].readerId != 2001 ||
-        records[0].bookId != 1001 ||
-        records[0].status != BORROWED) {
+    if (data.borrowRecords[0].readerId != 2001 ||
+        data.borrowRecords[0].bookId != 1001 ||
+        data.borrowRecords[0].status != BORROWED) {
         return fail("valid Borrow Book should store reader ID, book ID, and BORROWED status");
     }
-    if (books[0].quantity != 1) {
+    if (data.books[0].quantity != 1) {
         return fail("valid Borrow Book should decrease book quantity");
     }
     if (!containsText(borrowOutput, "Book borrowed successfully")) {
         return fail("valid Borrow Book should print success message");
     }
 
-    vector<Book> invalidReaderBooks = {
-        {1002, "Code Complete", "Steve McConnell", 2},
-    };
-    vector<Reader> invalidReaderReaders = {
-        {2002, "Tran Thi Binh", "0902222333"},
-    };
-    vector<BorrowRecord> invalidReaderRecords;
+    LibraryData invalidReaderData;
+    invalidReaderData.books.push_back({1002, "Code Complete", "Steve McConnell", 2});
+    invalidReaderData.readers.push_back({2002, "Tran Thi Binh", "0902222333"});
     string invalidReaderOutput = runBorrowBookTwiceWithInput(
-        invalidReaderBooks,
-        invalidReaderReaders,
-        invalidReaderRecords,
+        invalidReaderData,
         "abc\n"
         "2002\n"
         "1002\n"
     );
-    if (invalidReaderRecords.size() != 1) {
+    if (invalidReaderData.borrowRecords.size() != 1) {
         return fail("invalid reader ID should clear input so the next borrow can succeed");
     }
-    if (invalidReaderBooks[0].quantity != 1) {
+    if (invalidReaderData.books[0].quantity != 1) {
         return fail("valid borrow after invalid reader ID should decrease quantity once");
     }
     if (!containsText(invalidReaderOutput, "Invalid reader ID") ||
@@ -139,26 +138,20 @@ int main() {
         return fail("invalid reader ID recovery should print error then success");
     }
 
-    vector<Book> invalidBookBooks = {
-        {1003, "The Pragmatic Programmer", "Andrew Hunt", 2},
-    };
-    vector<Reader> invalidBookReaders = {
-        {2003, "Le Van Cuong", "0903333444"},
-    };
-    vector<BorrowRecord> invalidBookRecords;
+    LibraryData invalidBookData;
+    invalidBookData.books.push_back({1003, "The Pragmatic Programmer", "Andrew Hunt", 2});
+    invalidBookData.readers.push_back({2003, "Le Van Cuong", "0903333444"});
     string invalidBookOutput = runBorrowBookTwiceWithInput(
-        invalidBookBooks,
-        invalidBookReaders,
-        invalidBookRecords,
+        invalidBookData,
         "2003\n"
         "xyz\n"
         "2003\n"
         "1003\n"
     );
-    if (invalidBookRecords.size() != 1) {
+    if (invalidBookData.borrowRecords.size() != 1) {
         return fail("invalid book ID should clear input so the next borrow can succeed");
     }
-    if (invalidBookBooks[0].quantity != 1) {
+    if (invalidBookData.books[0].quantity != 1) {
         return fail("valid borrow after invalid book ID should decrease quantity once");
     }
     if (!containsText(invalidBookOutput, "Invalid book ID") ||
@@ -166,101 +159,94 @@ int main() {
         return fail("invalid book ID recovery should print error then success");
     }
 
-    vector<Book> missingReaderBooks = {
-        {1004, "Design Patterns", "Erich Gamma", 2},
-    };
-    vector<Reader> missingReaderReaders = {
-        {2004, "Pham Thi Dung", "0904444555"},
-    };
-    vector<BorrowRecord> missingReaderRecords;
+    LibraryData missingReaderData;
+    missingReaderData.books.push_back({1004, "Design Patterns", "Erich Gamma", 2});
+    missingReaderData.readers.push_back({2004, "Pham Thi Dung", "0904444555"});
     string missingReaderOutput = runBorrowBookWithInput(
-        missingReaderBooks,
-        missingReaderReaders,
-        missingReaderRecords,
+        missingReaderData,
         "9999\n"
     );
-    if (!missingReaderRecords.empty()) {
+    if (!missingReaderData.borrowRecords.empty()) {
         return fail("missing Reader should not create borrow record");
     }
-    if (missingReaderBooks[0].quantity != 2) {
+    if (missingReaderData.books[0].quantity != 2) {
         return fail("missing Reader should not change book quantity");
     }
     if (!containsText(missingReaderOutput, "Reader not found")) {
         return fail("missing Reader should print not found message");
     }
 
-    vector<Book> missingBookBooks = {
-        {1005, "Refactoring", "Martin Fowler", 2},
-    };
-    vector<Reader> missingBookReaders = {
-        {2005, "Hoang Van Em", "0905555666"},
-    };
-    vector<BorrowRecord> missingBookRecords;
+    LibraryData missingBookData;
+    missingBookData.books.push_back({1005, "Refactoring", "Martin Fowler", 2});
+    missingBookData.readers.push_back({2005, "Hoang Van Em", "0905555666"});
     string missingBookOutput = runBorrowBookWithInput(
-        missingBookBooks,
-        missingBookReaders,
-        missingBookRecords,
+        missingBookData,
         "2005\n"
         "9999\n"
     );
-    if (!missingBookRecords.empty()) {
+    if (!missingBookData.borrowRecords.empty()) {
         return fail("missing Book should not create borrow record");
     }
-    if (missingBookBooks[0].quantity != 2) {
+    if (missingBookData.books[0].quantity != 2) {
         return fail("missing Book should not change book quantity");
     }
     if (!containsText(missingBookOutput, "Book not found")) {
         return fail("missing Book should print not found message");
     }
 
-    vector<Book> unavailableBooks = {
-        {1006, "Domain-Driven Design", "Eric Evans", 0},
-    };
-    vector<Reader> unavailableReaders = {
-        {2006, "Do Thi Giang", "0906666777"},
-    };
-    vector<BorrowRecord> unavailableRecords;
+    LibraryData unavailableData;
+    unavailableData.books.push_back({1006, "Domain-Driven Design", "Eric Evans", 0});
+    unavailableData.readers.push_back({2006, "Do Thi Giang", "0906666777"});
     string unavailableOutput = runBorrowBookWithInput(
-        unavailableBooks,
-        unavailableReaders,
-        unavailableRecords,
+        unavailableData,
         "2006\n"
         "1006\n"
     );
-    if (!unavailableRecords.empty()) {
+    if (!unavailableData.borrowRecords.empty()) {
         return fail("unavailable Book should not create borrow record");
     }
-    if (unavailableBooks[0].quantity != 0) {
+    if (unavailableData.books[0].quantity != 0) {
         return fail("unavailable Book should keep quantity unchanged");
     }
     if (!containsText(unavailableOutput, "Book is unavailable")) {
         return fail("unavailable Book should print unavailable message");
     }
 
-    vector<Book> duplicateBooks = {
-        {1007, "Effective C++", "Scott Meyers", 2},
-    };
-    vector<Reader> duplicateReaders = {
-        {2007, "Bui Van Hung", "0907777888"},
-    };
-    vector<BorrowRecord> duplicateRecords = {
-        {1007, 2007, BORROWED},
-    };
+    LibraryData duplicateData;
+    duplicateData.books.push_back({1007, "Effective C++", "Scott Meyers", 2});
+    duplicateData.readers.push_back({2007, "Bui Van Hung", "0907777888"});
+    duplicateData.borrowRecords.push_back({1007, 2007, BORROWED});
     string duplicateOutput = runBorrowBookWithInput(
-        duplicateBooks,
-        duplicateReaders,
-        duplicateRecords,
+        duplicateData,
         "2007\n"
         "1007\n"
     );
-    if (duplicateRecords.size() != 1) {
+    if (duplicateData.borrowRecords.size() != 1) {
         return fail("duplicate active borrow should not create another record");
     }
-    if (duplicateBooks[0].quantity != 2) {
+    if (duplicateData.books[0].quantity != 2) {
         return fail("duplicate active borrow should keep quantity unchanged");
     }
     if (!containsText(duplicateOutput, "Reader already borrowed this book")) {
         return fail("duplicate active borrow should print duplicate message");
+    }
+
+    LibraryData returnData;
+    returnData.books.push_back({1008, "C++ Primer", "Stanley Lippman", 1});
+    returnData.borrowRecords.push_back({1008, 2008, BORROWED});
+    string returnOutput = runReturnBookWithInput(
+        returnData,
+        "2008\n"
+        "1008\n"
+    );
+    if (returnData.borrowRecords[0].status != RETURNED) {
+        return fail("valid Return Book should update status to RETURNED");
+    }
+    if (returnData.books[0].quantity != 2) {
+        return fail("valid Return Book should increase book quantity");
+    }
+    if (!containsText(returnOutput, "Book returned successfully")) {
+        return fail("valid Return Book should print success message");
     }
 
     cout << "PASS: borrow management automated checks" << endl;

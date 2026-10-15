@@ -101,14 +101,21 @@ int main() {
     std::vector<Book> books;
     std::vector<Reader> readers;
     std::vector<BorrowRecord> records;
+    LibraryData data;
 
     books.push_back({1, "Title", "Author", 2});
     readers.push_back({1, "Reader", "000"});
     records.push_back({1, 1, BORROWED});
+    data.books.push_back({2, "Data Title", "Data Author", 3});
+    data.readers.push_back({2, "Data Reader", "111"});
+    data.borrowRecords.push_back({2, 2, RETURNED});
 
     return (books[0].id == 1 &&
             readers[0].id == 1 &&
             records[0].status == BORROWED &&
+            data.books[0].quantity == 3 &&
+            data.readers[0].id == 2 &&
+            data.borrowRecords[0].status == RETURNED &&
             RETURNED == 0) ? 0 : 1;
 }
 CPP

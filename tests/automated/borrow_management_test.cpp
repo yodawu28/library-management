@@ -249,6 +249,41 @@ int main() {
         return fail("valid Return Book should print success message");
     }
 
+    LibraryData missingRecordData;
+    missingRecordData.books.push_back({1009, "Algorithms", "Robert Sedgewick", 1});
+    string missingRecordOutput = runReturnBookWithInput(
+        missingRecordData,
+        "2009\n"
+        "1009\n"
+    );
+    if (!missingRecordData.borrowRecords.empty()) {
+        return fail("missing Return record should not create or change records");
+    }
+    if (missingRecordData.books[0].quantity != 1) {
+        return fail("missing Return record should keep book quantity unchanged");
+    }
+    if (!containsText(missingRecordOutput, "Borrow record not found")) {
+        return fail("missing Return record should print not found message");
+    }
+
+    LibraryData alreadyReturnedData;
+    alreadyReturnedData.books.push_back({1010, "Computer Networks", "Andrew Tanenbaum", 2});
+    alreadyReturnedData.borrowRecords.push_back({1010, 2010, RETURNED});
+    string alreadyReturnedOutput = runReturnBookWithInput(
+        alreadyReturnedData,
+        "2010\n"
+        "1010\n"
+    );
+    if (alreadyReturnedData.borrowRecords[0].status != RETURNED) {
+        return fail("already returned record should keep RETURNED status");
+    }
+    if (alreadyReturnedData.books[0].quantity != 2) {
+        return fail("already returned record should keep book quantity unchanged");
+    }
+    if (!containsText(alreadyReturnedOutput, "Book already returned")) {
+        return fail("already returned record should print already returned message");
+    }
+
     cout << "PASS: borrow management automated checks" << endl;
     return 0;
 }

@@ -96,6 +96,15 @@ void returnBook(
 
     BorrowRecord* record = getActiveBorrowRecord(data.borrowRecords, readerId, bookId);
     if (record == nullptr) {
+        for (const BorrowRecord& currentRecord : data.borrowRecords) {
+            if (currentRecord.readerId == readerId &&
+                currentRecord.bookId == bookId &&
+                currentRecord.status == RETURNED) {
+                cout << "Book already returned." << endl;
+                return;
+            }
+        }
+
         cout << "Borrow record not found." << endl;
         return;
     }

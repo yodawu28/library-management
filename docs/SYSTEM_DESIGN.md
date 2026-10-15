@@ -180,9 +180,13 @@ File: `main.cpp`
 
 Function:
 - `main()`.
-- `bookMenu(vector<Book>& books)`.
-- `readerMenu(vector<Reader>& readers)`.
-- `mainMenu(vector<Book>& books, vector<Reader>& readers, vector<BorrowRecord>& records)`.
+- `bookMenu(LibraryData& data)`.
+- `readerMenu(LibraryData& data)`.
+- `mainMenu(LibraryData& data)`.
+
+Menu nhận `LibraryData&` để khi Sprint 6.0 tích hợp UI, các lựa chọn Delete
+Book, Delete Reader, Borrow Book và Return Book đều dùng chung dữ liệu sách,
+độc giả và phiếu mượn.
 
 ## 4. Menu Design
 

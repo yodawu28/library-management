@@ -130,14 +130,12 @@ void loadBorrowRecords(
 // Menu
 // ====================
 
-void bookMenu(vector<Book>& books);
+void bookMenu(LibraryData& data);
 
-void readerMenu(vector<Reader>& readers);
+void readerMenu(LibraryData& data);
 
 void mainMenu(
-    vector<Book>& books,
-    vector<Reader>& readers,
-    vector<BorrowRecord>& records
+    LibraryData& data
 );
 
 

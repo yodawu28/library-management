@@ -74,8 +74,26 @@ if grep -q "reader.cpp.*not implemented yet" ARCHITECTURE.md; then
   fail "ARCHITECTURE.md still says reader.cpp is not implemented"
 fi
 
+if grep -Eq "Borrow / Return module.*In progress|Sprint 4\.0 is implementing|remaining Borrow / Return validation|Borrow / Return currently in" ARCHITECTURE.md; then
+  fail "ARCHITECTURE.md still describes Borrow/Return as unfinished"
+fi
+
 if grep -Eq "library\.h:[0-9]" ARCHITECTURE.md; then
   fail "ARCHITECTURE.md uses fragile library.h line references"
+fi
+
+if grep -Eq "bookMenu\(vector<Book>&|readerMenu\(vector<Reader>&|mainMenu\(vector<Book>&" library.h docs/SYSTEM_DESIGN.md; then
+  fail "menu contract should use LibraryData for cross-list workflows"
+fi
+
+if awk '
+  FNR == 1 { in_main_menu = 0 }
+  /mainMenu[[:space:]]*\(/ { in_main_menu = 1 }
+  in_main_menu && /vector<(Book|Reader|BorrowRecord)>&/ { found = 1 }
+  in_main_menu && /\)/ { in_main_menu = 0 }
+  END { exit found ? 0 : 1 }
+' library.h docs/SYSTEM_DESIGN.md; then
+  fail "mainMenu contract should use LibraryData instead of separate vectors"
 fi
 
 if grep -q "nếu sau này nhóm thêm test tự động" README.md; then
@@ -84,6 +102,10 @@ fi
 
 if grep -q -- "- Implement Book Management." CHANGELOG.md; then
   fail "CHANGELOG.md still lists Book Management as planned"
+fi
+
+if grep -Eq -- "- Implement Borrow / Return\.|deferred đến Sprint 4\.0" CHANGELOG.md; then
+  fail "CHANGELOG.md still describes Borrow/Return or TC-R07 as pending"
 fi
 
 note "checking Borrow/Return manual E2E guide"

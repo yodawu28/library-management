@@ -14,7 +14,7 @@ Current source files:
 | Validation helpers | `validation.cpp` | Implements reusable `isPositiveId`, `isNonNegativeNumber`, and `isEmptyText` helpers |
 | Book module | `book.cpp` | Implemented for Sprint 2.0: add, update, delete, search, display, sort, `getBookById`, and `printBook` |
 | Reader module | `reader.cpp` | Implemented for Sprint 3.0: add, update, delete, search, display, `getReaderById`, and `printReader` |
-| Borrow / Return module | `borrow.cpp` | In progress for Sprint 4.0: borrow flow and successful return flow implemented |
+| Borrow / Return module | `borrow.cpp` | Implemented for Sprint 4.0: borrow flow, return flow, validation, active-borrow checks, and test-result recording |
 | File I/O module | `file.cpp` | Present, pending Sprint 5.0 implementation |
 | UI / Integration | `main.cpp` | Present, pending Sprint 6.0 implementation |
 | Verification | `scripts/verify.sh` | Active deterministic syntax/header checks, architecture freshness checks, Book Management, Reader Management, and Borrow Management automated checks |
@@ -22,12 +22,13 @@ Current source files:
 
 Sprint 2.0 has completed Book Management in `book.cpp`. Sprint 3.0 has
 completed Reader Management in `reader.cpp`, including add, update, delete,
-search, display, `getReaderById`, and `printReader`. Sprint 4.0 is implementing
-Borrow / Return in `borrow.cpp`, with borrow flow and successful return flow
-covered by the module regression check. The shared `validation.cpp` helper
-module owns simple ID, non-negative number, and empty-text checks. `main.cpp`
-and `file.cpp` are still pending, so the bottleneck analysis below separates
-confirmed implemented behavior from future module risks.
+search, display, `getReaderById`, and `printReader`. Sprint 4.0 has completed
+Borrow / Return in `borrow.cpp`, including valid borrow, missing reader/book,
+unavailable book, duplicate active borrow, valid return, missing return record,
+and already-returned validation. The shared `validation.cpp` helper module owns
+simple ID, non-negative number, and empty-text checks. `main.cpp` and `file.cpp`
+are still pending, so the bottleneck analysis below separates confirmed
+implemented behavior from future module risks.
 
 ## 2. Confirmed Data Model
 
@@ -181,8 +182,10 @@ sequenceDiagram
     U->>M: Choose Return Book
     M->>R: returnBook(data)
     R->>Records: Find matching BORROWED record
-    alt Record not found
-        R-->>U: Display error
+    alt Already RETURNED
+        R-->>U: Display already returned error
+    else Record not found
+        R-->>U: Display missing record error
     else Record found
         R->>Records: status = RETURNED
         R->>Books: quantity++
@@ -210,7 +213,8 @@ restoring quantity or duplicate active borrow records.
 
 Recommendation:
 - Centralize checks for active borrow records inside `borrow.cpp`.
-- Cover duplicate borrow, return twice, unavailable quantity, and missing book/reader in the manual test-case table before final reporting.
+- Keep duplicate borrow, return twice, unavailable quantity, and missing
+  book/reader covered in the manual test-case table and automated module check.
 
 ### P3 - File I/O Can Become a User-Visible Latency Point
 
@@ -272,8 +276,7 @@ No application logging or credential handling exists. Current privacy/security r
 
 1. Use the completed Book Management module as the style reference for future modules.
 2. Implement Reader Management with matching validation style.
-3. Complete the remaining Borrow / Return validation cases and record
-   cross-list consistency test cases.
+3. Keep Borrow / Return regression checks green while moving to File I/O.
 4. Implement File I/O, including malformed input handling where practical.
 5. Integrate menus after individual modules behave correctly.
 6. Run `./scripts/verify.sh` before each milestone and before final submission.
@@ -281,10 +284,10 @@ No application logging or credential handling exists. Current privacy/security r
 ## 11. Summary
 
 The current codebase is a contract-first C++ course project with Book
-Management and Reader Management implemented, plus Borrow / Return currently in
-progress. The architecture remains appropriate for the assignment: flat C++
-modules, shared `library.h`, in-memory vectors, focused automated checks,
-manual E2E evidence, and file persistence planned for a later sprint. The main
-future performance bottleneck is predictable O(n) vector scanning for
-lookup-heavy workflows, but that trade-off is acceptable at this stage and
-easier for the group to implement, test, and explain.
+Management, Reader Management, and Borrow / Return implemented. The architecture
+remains appropriate for the assignment: flat C++ modules, shared `library.h`,
+in-memory vectors, focused automated checks, manual E2E evidence, and file
+persistence planned for the next sprint. The main future performance bottleneck
+is predictable O(n) vector scanning for lookup-heavy workflows, but that
+trade-off is acceptable at this stage and easier for the group to implement,
+test, and explain.

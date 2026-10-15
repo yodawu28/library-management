@@ -21,11 +21,22 @@
   `displayReaders`, `getReaderById`, và `printReader`.
 - Thêm automated regression checks nội bộ cho Reader Management.
 - Thêm hướng dẫn manual E2E cho Reader Management trong `tests/e2e/`.
-- Ghi kết quả TC-R01 đến TC-R08 trong `docs/TEST_DESIGN.md`, với TC-R07
-  deferred đến Sprint 4.0 vì cần Borrow/Return state.
+- Ghi kết quả TC-R01 đến TC-R08 trong `docs/TEST_DESIGN.md`; TC-R07 cần
+  Borrow/Return state và đã được hoàn tất trong v0.4.0.
+
+## v0.4.0 - 2026-10-15
+- Hoàn thành Sprint 4.0 Borrow / Return.
+- Implement `borrowBook`, `returnBook`, `getActiveBorrowRecord`, và các kiểm
+  tra mượn/trả quan trọng: reader không tồn tại, book không tồn tại, hết sách,
+  mượn trùng, trả hợp lệ, không có record, và record đã trả.
+- Cập nhật `deleteBook` và `deleteReader` để từ chối xóa khi còn record
+  `BORROWED` đang active.
+- Thêm automated regression checks nội bộ và hướng dẫn manual E2E cho
+  Borrow / Return.
+- Ghi kết quả TC-BR01 đến TC-BR05 và TC-RT01 đến TC-RT03 trong
+  `docs/TEST_DESIGN.md`.
 
 ## Planned
-- Implement Borrow / Return.
 - Implement File I/O.
 - Integrate menus in `main.cpp`.
 - Record manual test-case results and screenshots for the final report.

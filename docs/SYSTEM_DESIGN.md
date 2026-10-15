@@ -175,6 +175,27 @@ File dữ liệu:
 - `data/readers.dat`.
 - `data/borrow_records.dat`.
 
+Định dạng lưu trữ dùng text file đơn giản, mỗi dòng là một record, các field
+phân tách bằng ký tự `|`:
+
+```text
+Book: id|title|author|quantity
+Reader: id|name|phone
+BorrowRecord: bookId|readerId|status
+```
+
+Ví dụ:
+
+```text
+1001|Clean Code|Robert C. Martin|3
+2001|Nguyen Van An|0901234567
+1001|2001|1
+```
+
+Sprint 5.0 chỉ implement các hàm save/load trong `file.cpp`. Việc gọi load khi
+khởi động chương trình, gọi save từ menu, hoặc tự động save khi thoát sẽ thuộc
+Sprint 6.0 khi tích hợp `main.cpp`.
+
 ### 3.6 User Interface
 File: `main.cpp`
 

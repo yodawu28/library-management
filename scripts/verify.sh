@@ -108,6 +108,18 @@ if grep -Eq -- "- Implement Borrow / Return\.|deferred đến Sprint 4\.0" CHANG
   fail "CHANGELOG.md still describes Borrow/Return or TC-R07 as pending"
 fi
 
+if ! grep -q "Book: id|title|author|quantity" docs/SYSTEM_DESIGN.md; then
+  fail "docs/SYSTEM_DESIGN.md missing Book file format"
+fi
+
+if ! grep -q "Reader: id|name|phone" docs/SYSTEM_DESIGN.md; then
+  fail "docs/SYSTEM_DESIGN.md missing Reader file format"
+fi
+
+if ! grep -q "BorrowRecord: bookId|readerId|status" docs/SYSTEM_DESIGN.md; then
+  fail "docs/SYSTEM_DESIGN.md missing BorrowRecord file format"
+fi
+
 note "checking Borrow/Return manual E2E guide"
 BORROW_RETURN_GUIDE="tests/e2e/borrow_return_manual.md"
 [[ -f "$BORROW_RETURN_GUIDE" && -r "$BORROW_RETURN_GUIDE" ]] ||

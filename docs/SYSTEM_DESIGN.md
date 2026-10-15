@@ -82,10 +82,11 @@ File: `book.cpp`
 
 Function:
 - `getBookById(vector<Book>& books, int id)`.
+- `hasActiveBorrowForBook(const vector<BorrowRecord>& records, int bookId)`.
 - `printBook(const Book& book)`.
 - `addBook(vector<Book>& books)`.
 - `updateBook(vector<Book>& books)`.
-- `deleteBook(vector<Book>& books)`.
+- `deleteBook(LibraryData& data)`.
 - `searchBook(vector<Book>& books)`.
 - `displayBooks(const vector<Book>& books)`.
 - `sortBooks(vector<Book>& books)`.
@@ -102,6 +103,8 @@ Sort hỗ trợ:
 
 `getBookById` là helper dùng chung cho các chức năng cần tìm sách theo ID.
 Hàm trả về con trỏ đến `Book` nếu tìm thấy, hoặc `nullptr` nếu không tìm thấy.
+`hasActiveBorrowForBook` kiểm tra sách có bản ghi mượn đang `BORROWED` trước
+khi cho phép xóa.
 `printBook` là helper dùng chung để hiển thị một quyển sách theo cùng format.
 
 ### 3.2 Validation Helpers
@@ -120,10 +123,11 @@ File: `reader.cpp`
 
 Function:
 - `getReaderById(vector<Reader>& readers, int id)`.
+- `hasActiveBorrowForReader(const vector<BorrowRecord>& records, int readerId)`.
 - `printReader(const Reader& reader)`.
 - `addReader(vector<Reader>& readers)`.
 - `updateReader(vector<Reader>& readers)`.
-- `deleteReader(vector<Reader>& readers)`.
+- `deleteReader(LibraryData& data)`.
 - `searchReader(const vector<Reader>& readers)`.
 - `displayReaders(const vector<Reader>& readers)`.
 
@@ -133,6 +137,8 @@ Search hỗ trợ:
 - Search by Phone.
 
 `getReaderById` là helper dùng chung cho các chức năng cần tìm độc giả theo ID.
+`hasActiveBorrowForReader` kiểm tra độc giả có bản ghi mượn đang `BORROWED`
+trước khi cho phép xóa.
 `printReader` là helper dùng chung để hiển thị một độc giả theo cùng format.
 `displayReaders` dùng `printReader` để tránh lặp logic in thông tin độc giả.
 

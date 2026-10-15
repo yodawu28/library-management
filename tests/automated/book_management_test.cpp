@@ -38,13 +38,13 @@ string runUpdateBookWithInput(vector<Book>& books, const string& input) {
     return output.str();
 }
 
-string runDeleteBookWithInput(vector<Book>& books, const string& input) {
+string runDeleteBookWithInput(LibraryData& data, const string& input) {
     istringstream inputStream(input);
     ostringstream output;
     streambuf* originalInput = cin.rdbuf(inputStream.rdbuf());
     streambuf* originalOutput = cout.rdbuf(output.rdbuf());
 
-    deleteBook(books);
+    deleteBook(data);
 
     cin.rdbuf(originalInput);
     cout.rdbuf(originalOutput);
@@ -90,10 +90,14 @@ string captureDisplayBooksOutput(const vector<Book>& books) {
 void verifyBookManagementFunctionsAreLinked() {
     (void)static_cast<bool (*)(int)>(&isNonNegativeNumber);
     (void)static_cast<Book* (*)(vector<Book>&, int)>(&getBookById);
+    (void)static_cast<bool (*)(
+        const vector<BorrowRecord>&,
+        int
+    )>(&hasActiveBorrowForBook);
     (void)static_cast<void (*)(const Book&)>(&printBook);
     (void)static_cast<void (*)(vector<Book>&)>(&addBook);
     (void)static_cast<void (*)(vector<Book>&)>(&updateBook);
-    (void)static_cast<void (*)(vector<Book>&)>(&deleteBook);
+    (void)static_cast<void (*)(LibraryData&)>(&deleteBook);
     (void)static_cast<void (*)(vector<Book>&)>(&searchBook);
     (void)static_cast<void (*)(const vector<Book>&)>(&displayBooks);
     (void)static_cast<void (*)(vector<Book>&)>(&sortBooks);
@@ -121,6 +125,17 @@ int main() {
 
     if (getBookById(helperBooks, 9999) != nullptr) {
         return fail("getBookById should return nullptr when ID is missing");
+    }
+
+    vector<BorrowRecord> helperRecords = {
+        {1001, 2001, RETURNED},
+        {1002, 2002, BORROWED},
+    };
+    if (!hasActiveBorrowForBook(helperRecords, 1002)) {
+        return fail("hasActiveBorrowForBook should find BORROWED records");
+    }
+    if (hasActiveBorrowForBook(helperRecords, 1001)) {
+        return fail("hasActiveBorrowForBook should ignore RETURNED records");
     }
 
     vector<Book> addedBooks;
@@ -290,30 +305,41 @@ int main() {
         return fail("negative update quantity should print validation message");
     }
 
-    vector<Book> deleteBooks = {
-        {1001, "Clean Code", "Robert C. Martin", 3},
-        {1002, "Code Complete", "Steve McConnell", 2},
-        {1003, "The Pragmatic Programmer", "Andrew Hunt", 4},
-    };
+    LibraryData deleteData;
+    deleteData.books.push_back({1001, "Clean Code", "Robert C. Martin", 3});
+    deleteData.books.push_back({1002, "Code Complete", "Steve McConnell", 2});
+    deleteData.books.push_back({1003, "The Pragmatic Programmer", "Andrew Hunt", 4});
 
-    string deleteOutput = runDeleteBookWithInput(deleteBooks, "1002\n");
-    if (deleteBooks.size() != 2 ||
-        deleteBooks[0].id != 1001 ||
-        deleteBooks[1].id != 1003) {
+    string deleteOutput = runDeleteBookWithInput(deleteData, "1002\n");
+    if (deleteData.books.size() != 2 ||
+        deleteData.books[0].id != 1001 ||
+        deleteData.books[1].id != 1003) {
         return fail("Delete Book should remove selected book and keep remaining order");
     }
     if (!containsText(deleteOutput, "Book deleted successfully")) {
         return fail("Delete Book should print success message");
     }
 
-    string missingDeleteOutput = runDeleteBookWithInput(deleteBooks, "9999\n");
-    if (deleteBooks.size() != 2 ||
-        deleteBooks[0].id != 1001 ||
-        deleteBooks[1].id != 1003) {
+    string missingDeleteOutput = runDeleteBookWithInput(deleteData, "9999\n");
+    if (deleteData.books.size() != 2 ||
+        deleteData.books[0].id != 1001 ||
+        deleteData.books[1].id != 1003) {
         return fail("missing Delete Book ID should keep book list unchanged");
     }
     if (!containsText(missingDeleteOutput, "Book not found")) {
         return fail("missing Delete Book ID should print not found message");
+    }
+
+    LibraryData activeBorrowBookData;
+    activeBorrowBookData.books.push_back({1004, "Design Patterns", "Erich Gamma", 2});
+    activeBorrowBookData.borrowRecords.push_back({1004, 2004, BORROWED});
+    string activeBorrowDeleteOutput = runDeleteBookWithInput(activeBorrowBookData, "1004\n");
+    if (activeBorrowBookData.books.size() != 1 ||
+        activeBorrowBookData.books[0].id != 1004) {
+        return fail("Delete Book should reject books with active borrow records");
+    }
+    if (!containsText(activeBorrowDeleteOutput, "Book is currently borrowed")) {
+        return fail("Delete Book with active borrow should print borrowed message");
     }
 
     vector<Book> searchBooks = {

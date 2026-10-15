@@ -58,13 +58,13 @@ string runUpdateReaderWithInput(vector<Reader>& readers, const string& input) {
     return output.str();
 }
 
-string runDeleteReaderWithInput(vector<Reader>& readers, const string& input) {
+string runDeleteReaderWithInput(LibraryData& data, const string& input) {
     istringstream inputStream(input);
     ostringstream output;
     streambuf* originalInput = cin.rdbuf(inputStream.rdbuf());
     streambuf* originalOutput = cout.rdbuf(output.rdbuf());
 
-    deleteReader(readers);
+    deleteReader(data);
 
     cin.rdbuf(originalInput);
     cout.rdbuf(originalOutput);
@@ -88,10 +88,14 @@ void verifyReaderManagementFunctionsAreLinked() {
     (void)static_cast<bool (*)(int)>(&isPositiveId);
     (void)static_cast<bool (*)(const string&)>(&isEmptyText);
     (void)static_cast<Reader* (*)(vector<Reader>&, int)>(&getReaderById);
+    (void)static_cast<bool (*)(
+        const vector<BorrowRecord>&,
+        int
+    )>(&hasActiveBorrowForReader);
     (void)static_cast<void (*)(const Reader&)>(&printReader);
     (void)static_cast<void (*)(vector<Reader>&)>(&addReader);
     (void)static_cast<void (*)(vector<Reader>&)>(&updateReader);
-    (void)static_cast<void (*)(vector<Reader>&)>(&deleteReader);
+    (void)static_cast<void (*)(LibraryData&)>(&deleteReader);
     (void)static_cast<void (*)(const vector<Reader>&)>(&searchReader);
     (void)static_cast<void (*)(const vector<Reader>&)>(&displayReaders);
 }
@@ -121,6 +125,17 @@ int main() {
 
     if (getReaderById(helperReaders, 9999) != nullptr) {
         return fail("getReaderById should return nullptr when ID is missing");
+    }
+
+    vector<BorrowRecord> helperRecords = {
+        {1001, 2001, RETURNED},
+        {1002, 2002, BORROWED},
+    };
+    if (!hasActiveBorrowForReader(helperRecords, 2002)) {
+        return fail("hasActiveBorrowForReader should find BORROWED records");
+    }
+    if (hasActiveBorrowForReader(helperRecords, 2001)) {
+        return fail("hasActiveBorrowForReader should ignore RETURNED records");
     }
 
     Reader reader = {2001, "Nguyen Van An", "0901234567"};
@@ -281,40 +296,51 @@ int main() {
         return fail("empty update reader phone should print validation message");
     }
 
-    vector<Reader> deleteReaders = {
-        {2001, "Nguyen Van An", "0901234567"},
-        {2002, "Tran Thi Binh", "0902222333"},
-        {2003, "Le Van Cuong", "0903333444"},
-    };
+    LibraryData deleteData;
+    deleteData.readers.push_back({2001, "Nguyen Van An", "0901234567"});
+    deleteData.readers.push_back({2002, "Tran Thi Binh", "0902222333"});
+    deleteData.readers.push_back({2003, "Le Van Cuong", "0903333444"});
 
-    string deleteOutput = runDeleteReaderWithInput(deleteReaders, "2002\n");
-    if (deleteReaders.size() != 2 ||
-        deleteReaders[0].id != 2001 ||
-        deleteReaders[1].id != 2003) {
+    string deleteOutput = runDeleteReaderWithInput(deleteData, "2002\n");
+    if (deleteData.readers.size() != 2 ||
+        deleteData.readers[0].id != 2001 ||
+        deleteData.readers[1].id != 2003) {
         return fail("Delete Reader should remove selected reader and keep remaining order");
     }
     if (!containsText(deleteOutput, "Reader deleted successfully")) {
         return fail("Delete Reader should print success message");
     }
 
-    string missingDeleteOutput = runDeleteReaderWithInput(deleteReaders, "9999\n");
-    if (deleteReaders.size() != 2 ||
-        deleteReaders[0].id != 2001 ||
-        deleteReaders[1].id != 2003) {
+    string missingDeleteOutput = runDeleteReaderWithInput(deleteData, "9999\n");
+    if (deleteData.readers.size() != 2 ||
+        deleteData.readers[0].id != 2001 ||
+        deleteData.readers[1].id != 2003) {
         return fail("missing Delete Reader ID should keep reader list unchanged");
     }
     if (!containsText(missingDeleteOutput, "Reader not found")) {
         return fail("missing Delete Reader ID should print not found message");
     }
 
-    string invalidDeleteInputOutput = runDeleteReaderWithInput(deleteReaders, "abc\n");
-    if (deleteReaders.size() != 2 ||
-        deleteReaders[0].id != 2001 ||
-        deleteReaders[1].id != 2003) {
+    string invalidDeleteInputOutput = runDeleteReaderWithInput(deleteData, "abc\n");
+    if (deleteData.readers.size() != 2 ||
+        deleteData.readers[0].id != 2001 ||
+        deleteData.readers[1].id != 2003) {
         return fail("invalid Delete Reader input should keep reader list unchanged");
     }
     if (!containsText(invalidDeleteInputOutput, "Invalid reader ID")) {
         return fail("invalid Delete Reader input should print validation message");
+    }
+
+    LibraryData activeBorrowReaderData;
+    activeBorrowReaderData.readers.push_back({2004, "Pham Thi Dung", "0904444555"});
+    activeBorrowReaderData.borrowRecords.push_back({1004, 2004, BORROWED});
+    string activeBorrowDeleteOutput = runDeleteReaderWithInput(activeBorrowReaderData, "2004\n");
+    if (activeBorrowReaderData.readers.size() != 1 ||
+        activeBorrowReaderData.readers[0].id != 2004) {
+        return fail("Delete Reader should reject readers with active borrow records");
+    }
+    if (!containsText(activeBorrowDeleteOutput, "Reader is currently borrowing books")) {
+        return fail("Delete Reader with active borrow should print borrowed message");
     }
 
     vector<Reader> searchReaders = {

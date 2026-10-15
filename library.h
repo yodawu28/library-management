@@ -52,13 +52,15 @@ bool isEmptyText(const string& text);
 
 Book* getBookById(vector<Book>& books, int id);
 
+bool hasActiveBorrowForBook(const vector<BorrowRecord>& records, int bookId);
+
 void printBook(const Book& book);
 
 void addBook(vector<Book>& books);
 
 void updateBook(vector<Book>& books);
 
-void deleteBook(vector<Book>& books);
+void deleteBook(LibraryData& data);
 
 void searchBook(vector<Book>& books);
 
@@ -72,13 +74,15 @@ void sortBooks(vector<Book>& books);
 
 Reader* getReaderById(vector<Reader>& readers, int id);
 
+bool hasActiveBorrowForReader(const vector<BorrowRecord>& records, int readerId);
+
 void printReader(const Reader& reader);
 
 void addReader(vector<Reader>& readers);
 
 void updateReader(vector<Reader>& readers);
 
-void deleteReader(vector<Reader>& readers);
+void deleteReader(LibraryData& data);
 
 void searchReader(const vector<Reader>& readers);
 

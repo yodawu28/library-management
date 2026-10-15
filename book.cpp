@@ -14,6 +14,16 @@ Book* getBookById(vector<Book>& books, int id) {
     return nullptr;
 }
 
+bool hasActiveBorrowForBook(const vector<BorrowRecord>& records, int bookId) {
+    for (const BorrowRecord& record : records) {
+        if (record.bookId == bookId && record.status == BORROWED) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void printBook(const Book& book) {
     cout << "ID: " << book.id << endl;
     cout << "Title: " << book.title << endl;
@@ -126,7 +136,7 @@ void updateBook(vector<Book>& books) {
     cout << "Book updated successfully." << endl;
 }
 
-void deleteBook(vector<Book>& books) {
+void deleteBook(LibraryData& data) {
     int id;
 
     cout << "Enter book ID to delete: ";
@@ -138,9 +148,14 @@ void deleteBook(vector<Book>& books) {
     }
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    for (vector<Book>::size_type i = 0; i < books.size(); i++) {
-        if (books[i].id == id) {
-            books.erase(books.begin() + i);
+    if (hasActiveBorrowForBook(data.borrowRecords, id)) {
+        cout << "Book is currently borrowed." << endl;
+        return;
+    }
+
+    for (vector<Book>::size_type i = 0; i < data.books.size(); i++) {
+        if (data.books[i].id == id) {
+            data.books.erase(data.books.begin() + i);
             cout << "Book deleted successfully." << endl;
             return;
         }

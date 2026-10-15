@@ -13,6 +13,16 @@ Reader* getReaderById(vector<Reader>& readers, int id) {
     return nullptr;
 }
 
+bool hasActiveBorrowForReader(const vector<BorrowRecord>& records, int readerId) {
+    for (const BorrowRecord& record : records) {
+        if (record.readerId == readerId && record.status == BORROWED) {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 void printReader(const Reader& reader) {
     cout << "ID: " << reader.id << endl;
     cout << "Name: " << reader.name << endl;
@@ -98,7 +108,7 @@ void updateReader(vector<Reader>& readers) {
     cout << "Reader updated successfully." << endl;
 }
 
-void deleteReader(vector<Reader>& readers) {
+void deleteReader(LibraryData& data) {
     int id;
 
     cout << "Enter reader ID to delete: ";
@@ -110,9 +120,14 @@ void deleteReader(vector<Reader>& readers) {
     }
     cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
-    for (vector<Reader>::size_type i = 0; i < readers.size(); i++) {
-        if (readers[i].id == id) {
-            readers.erase(readers.begin() + i);
+    if (hasActiveBorrowForReader(data.borrowRecords, id)) {
+        cout << "Reader is currently borrowing books." << endl;
+        return;
+    }
+
+    for (vector<Reader>::size_type i = 0; i < data.readers.size(); i++) {
+        if (data.readers[i].id == id) {
+            data.readers.erase(data.readers.begin() + i);
             cout << "Reader deleted successfully." << endl;
             return;
         }

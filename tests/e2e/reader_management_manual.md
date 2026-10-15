@@ -95,15 +95,13 @@ Additional manual check:
 ## TC-R07: Delete Reader With Active Borrow Record
 
 Status:
-- Deferred for Sprint 3.0.
+- Covered by the Sprint 4 focused module check.
 
 Reason:
-- Current Reader Management scope only receives `vector<Reader>& readers`.
-- Active borrow protection needs Borrow/Return state, especially
-  `vector<BorrowRecord>`, so this check should be completed in Sprint 4.0 or
-  after a coordinated function contract update.
+- `deleteReader` now receives `LibraryData&` so it can inspect active
+  `BorrowRecord` data before deleting a reader.
 
-Expected future result:
+Expected result:
 - Program rejects deleting a reader who still has an active borrowed book.
 - Reader data remains unchanged.
 

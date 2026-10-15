@@ -43,7 +43,7 @@ lại sau Sprint 6.0 khi menu integration hoàn tất.
 | TC-B05 | Update Book | ID tồn tại, dữ liệu mới hợp lệ | Cập nhật sách thành công | Focused module check cập nhật ID `1001`, đổi đúng title, author, quantity và giữ sách khác không đổi | Pass |
 | TC-B06 | Update Book | ID không tồn tại | Báo lỗi không tìm thấy sách | Focused module check nhập ID `9999`, danh sách không đổi và in lỗi không tìm thấy | Pass |
 | TC-B07 | Delete Book | ID tồn tại và không đang được mượn | Xóa sách thành công | Focused module check xóa ID `1002`, danh sách giảm một phần tử và giữ đúng thứ tự sách còn lại | Pass |
-| TC-B08 | Delete Book | ID tồn tại nhưng đang được mượn | Từ chối xóa | Chưa thể chạy trong Sprint 2.0 vì `deleteBook(vector<Book>&)` chưa nhận `BorrowRecord`; chuyển kiểm tra borrowed-book protection sang Sprint 4 | Deferred |
+| TC-B08 | Delete Book | ID tồn tại nhưng đang được mượn | Từ chối xóa | Focused module check dùng `LibraryData`, có record `BORROWED`, không xóa sách và in lỗi sách đang được mượn | Pass |
 | TC-B09 | Search Book | Search by title keyword | Hiển thị các sách khớp keyword | Focused module check keyword `Code`, hiển thị đúng các sách có title khớp và không hiển thị sách không khớp | Pass |
 | TC-B10 | Sort Books | Sort by title | Danh sách được sắp xếp theo title | Focused module check sort by title cho kết quả `Clean Code`, `Code Complete`, `The Pragmatic Programmer`; sort ID và quantity cũng đã được kiểm tra thêm | Pass |
 
@@ -57,7 +57,7 @@ lại sau Sprint 6.0 khi menu integration hoàn tất.
 | TC-R04 | Update Reader | ID tồn tại, dữ liệu mới hợp lệ | Cập nhật độc giả thành công | Focused module check cập nhật ID `2001`, đổi đúng name, phone và giữ reader khác không đổi | Pass |
 | TC-R05 | Update Reader | ID không tồn tại | Báo lỗi không tìm thấy độc giả | Focused module check nhập ID `9999`, danh sách không đổi và in lỗi không tìm thấy | Pass |
 | TC-R06 | Delete Reader | ID tồn tại và không đang mượn sách | Xóa độc giả thành công | Focused module check xóa ID `2002`, danh sách giảm một phần tử và giữ đúng thứ tự reader còn lại | Pass |
-| TC-R07 | Delete Reader | ID tồn tại nhưng đang mượn sách | Từ chối xóa | Chưa thể chạy trong Sprint 3.0 vì `deleteReader(vector<Reader>&)` chưa nhận `BorrowRecord`; chuyển kiểm tra active-borrow protection sang Sprint 4 | Deferred |
+| TC-R07 | Delete Reader | ID tồn tại nhưng đang mượn sách | Từ chối xóa | Focused module check dùng `LibraryData`, có record `BORROWED`, không xóa độc giả và in lỗi độc giả đang mượn sách | Pass |
 | TC-R08 | Search Reader | Search by name keyword | Hiển thị độc giả khớp keyword | Focused module check keyword `Van`, hiển thị đúng các reader có name khớp và không hiển thị reader không khớp; search ID và phone cũng đã được kiểm tra thêm | Pass |
 
 ## 4. Borrow / Return Test Cases

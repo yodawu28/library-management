@@ -86,6 +86,17 @@ if grep -q -- "- Implement Book Management." CHANGELOG.md; then
   fail "CHANGELOG.md still lists Book Management as planned"
 fi
 
+note "checking Borrow/Return manual E2E guide"
+BORROW_RETURN_GUIDE="tests/e2e/borrow_return_manual.md"
+[[ -f "$BORROW_RETURN_GUIDE" && -r "$BORROW_RETURN_GUIDE" ]] ||
+  fail "missing or unreadable $BORROW_RETURN_GUIDE"
+
+for test_id in TC-BR01 TC-BR02 TC-BR03 TC-BR04 TC-BR05 TC-RT01 TC-RT02 TC-RT03; do
+  if ! grep -q "$test_id" "$BORROW_RETURN_GUIDE"; then
+    fail "$BORROW_RETURN_GUIDE missing $test_id"
+  fi
+done
+
 TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/library-verify.XXXXXX")" || fail "cannot create temp directory"
 trap 'rm -rf "$TMP_DIR"' EXIT
 

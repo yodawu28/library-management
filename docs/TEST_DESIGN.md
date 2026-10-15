@@ -64,14 +64,14 @@ lại sau Sprint 6.0 khi menu integration hoàn tất.
 
 | Test ID | Chức năng | Input | Expected Result | Actual Result | Status |
 | --- | --- | --- | --- | --- | --- |
-| TC-BR01 | Borrow Book | Reader tồn tại, book tồn tại, quantity > 0 | Mượn sách thành công, quantity giảm 1 | Chưa chạy | Pending |
-| TC-BR02 | Borrow Book | Reader không tồn tại | Báo lỗi reader không tồn tại | Chưa chạy | Pending |
-| TC-BR03 | Borrow Book | Book không tồn tại | Báo lỗi book không tồn tại | Chưa chạy | Pending |
-| TC-BR04 | Borrow Book | Book quantity = 0 | Từ chối mượn | Chưa chạy | Pending |
-| TC-BR05 | Borrow Book | Reader đã mượn book đó và chưa trả | Từ chối mượn trùng | Chưa chạy | Pending |
-| TC-RT01 | Return Book | Record tồn tại và đang `BORROWED` | Trả sách thành công, quantity tăng 1 | Chưa chạy | Pending |
-| TC-RT02 | Return Book | Không có record phù hợp | Báo lỗi không tìm thấy record | Chưa chạy | Pending |
-| TC-RT03 | Return Book | Record đã `RETURNED` | Từ chối trả lại lần nữa | Chưa chạy | Pending |
+| TC-BR01 | Borrow Book | Reader tồn tại, book tồn tại, quantity > 0 | Mượn sách thành công, quantity giảm 1 | Focused module check tạo record `BORROWED`, lưu đúng Reader ID/Book ID, giảm quantity và in thông báo thành công | Pass |
+| TC-BR02 | Borrow Book | Reader không tồn tại | Báo lỗi reader không tồn tại | Focused module check nhập Reader ID `9999`, không tạo record, không đổi quantity và in lỗi reader không tồn tại | Pass |
+| TC-BR03 | Borrow Book | Book không tồn tại | Báo lỗi book không tồn tại | Focused module check nhập Book ID `9999`, không tạo record, không đổi quantity và in lỗi book không tồn tại | Pass |
+| TC-BR04 | Borrow Book | Book quantity = 0 | Từ chối mượn | Focused module check quantity `0`, không tạo record, giữ quantity `0` và in lỗi sách không khả dụng | Pass |
+| TC-BR05 | Borrow Book | Reader đã mượn book đó và chưa trả | Từ chối mượn trùng | Focused module check có record `BORROWED`, không tạo record thứ hai, không giảm quantity và in lỗi mượn trùng | Pass |
+| TC-RT01 | Return Book | Record tồn tại và đang `BORROWED` | Trả sách thành công, quantity tăng 1 | Focused module check chuyển status sang `RETURNED`, tăng quantity và in thông báo thành công | Pass |
+| TC-RT02 | Return Book | Không có record phù hợp | Báo lỗi không tìm thấy record | Focused module check không tạo hoặc đổi record, giữ quantity và in lỗi không tìm thấy borrow record | Pass |
+| TC-RT03 | Return Book | Record đã `RETURNED` | Từ chối trả lại lần nữa | Focused module check giữ status `RETURNED`, không tăng quantity và in lỗi sách đã được trả | Pass |
 
 ## 5. File I/O Test Cases
 

@@ -97,6 +97,10 @@ for test_id in TC-BR01 TC-BR02 TC-BR03 TC-BR04 TC-BR05 TC-RT01 TC-RT02 TC-RT03; 
   fi
 done
 
+if grep -Eq "TC-(BR|RT)[0-9][0-9].*\| Chưa chạy \| Pending" docs/TEST_DESIGN.md; then
+  fail "docs/TEST_DESIGN.md still has pending Borrow/Return test results"
+fi
+
 TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/library-verify.XXXXXX")" || fail "cannot create temp directory"
 trap 'rm -rf "$TMP_DIR"' EXIT
 

@@ -36,7 +36,17 @@
 - Ghi kết quả TC-BR01 đến TC-BR05 và TC-RT01 đến TC-RT03 trong
   `docs/TEST_DESIGN.md`.
 
+## v0.5.0 - 2026-10-16
+- Hoàn thành Sprint 5.0 File I/O & Persistence.
+- Implement `saveBooks`, `loadBooks`, `saveReaders`, `loadReaders`,
+  `saveBorrowRecords`, và `loadBorrowRecords`.
+- Dùng định dạng text đơn giản với dấu `|`: `id|title|author|quantity`,
+  `id|name|phone`, và `bookId|readerId|status`.
+- Thêm automated regression checks nội bộ cho File I/O, bao gồm dữ liệu rỗng,
+  dòng sai format, dữ liệu không hợp lệ, và restore lại fixture `data/*.dat`.
+- Thêm hướng dẫn manual E2E cho File I/O trong `tests/e2e/`.
+- Ghi kết quả TC-F01 đến TC-F06 trong `docs/TEST_DESIGN.md`.
+
 ## Planned
-- Implement File I/O.
 - Integrate menus in `main.cpp`.
 - Record manual test-case results and screenshots for the final report.

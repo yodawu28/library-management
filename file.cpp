@@ -95,3 +95,51 @@ void loadReaders(vector<Reader>& readers) {
         readers.push_back(reader);
     }
 }
+
+void saveBorrowRecords(const vector<BorrowRecord>& records) {
+    ofstream file("data/borrow_records.dat");
+    if (!file) {
+        return;
+    }
+
+    for (const BorrowRecord& record : records) {
+        file << record.bookId << "|"
+             << record.readerId << "|"
+             << record.status << endl;
+    }
+}
+
+void loadBorrowRecords(vector<BorrowRecord>& records) {
+    ifstream file("data/borrow_records.dat");
+    if (!file) {
+        return;
+    }
+
+    records.clear();
+
+    string line;
+    while (getline(file, line)) {
+        BorrowRecord record;
+        string bookIdText;
+        string readerIdText;
+        string statusText;
+
+        size_t firstSeparator = line.find('|');
+        size_t secondSeparator = line.find('|', firstSeparator + 1);
+
+        if (firstSeparator == string::npos ||
+            secondSeparator == string::npos) {
+            continue;
+        }
+
+        bookIdText = line.substr(0, firstSeparator);
+        readerIdText = line.substr(firstSeparator + 1, secondSeparator - firstSeparator - 1);
+        statusText = line.substr(secondSeparator + 1);
+
+        record.bookId = stoi(bookIdText);
+        record.readerId = stoi(readerIdText);
+        record.status = stoi(statusText);
+
+        records.push_back(record);
+    }
+}

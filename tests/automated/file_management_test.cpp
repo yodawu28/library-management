@@ -40,6 +40,8 @@ void verifyFileManagementFunctionsAreLinked() {
     (void)static_cast<void (*)(vector<Book>&)>(&loadBooks);
     (void)static_cast<void (*)(const vector<Reader>&)>(&saveReaders);
     (void)static_cast<void (*)(vector<Reader>&)>(&loadReaders);
+    (void)static_cast<void (*)(const vector<BorrowRecord>&)>(&saveBorrowRecords);
+    (void)static_cast<void (*)(vector<BorrowRecord>&)>(&loadBorrowRecords);
 }
 
 int main() {
@@ -49,6 +51,8 @@ int main() {
     FileBackup booksFileBackup(booksFile);
     const string readersFile = "data/readers.dat";
     FileBackup readersFileBackup(readersFile);
+    const string borrowRecordsFile = "data/borrow_records.dat";
+    FileBackup borrowRecordsFileBackup(borrowRecordsFile);
 
     vector<Book> books;
     books.push_back({1001, "Clean Code", "Robert C. Martin", 3});
@@ -112,6 +116,37 @@ int main() {
         loadedReaders[1].name != "Tran Thi B, QA" ||
         loadedReaders[1].phone != "+84 98 765 4321") {
         return fail("loadReaders should preserve all fields of the second reader");
+    }
+
+    vector<BorrowRecord> records;
+    records.push_back({1001, 2001, BORROWED});
+    records.push_back({1002, 2002, RETURNED});
+
+    saveBorrowRecords(records);
+
+    string savedBorrowRecordsFile = readTextFile(borrowRecordsFile);
+    if (savedBorrowRecordsFile.find("1001|2001|1") == string::npos) {
+        return fail("saveBorrowRecords should write the borrowed record using the agreed text format");
+    }
+    if (savedBorrowRecordsFile.find("1002|2002|0") == string::npos) {
+        return fail("saveBorrowRecords should write the returned record using the agreed text format");
+    }
+
+    vector<BorrowRecord> loadedRecords;
+    loadBorrowRecords(loadedRecords);
+
+    if (loadedRecords.size() != 2) {
+        return fail("loadBorrowRecords should load two saved borrow records");
+    }
+    if (loadedRecords[0].bookId != 1001 ||
+        loadedRecords[0].readerId != 2001 ||
+        loadedRecords[0].status != BORROWED) {
+        return fail("loadBorrowRecords should preserve all fields of the borrowed record");
+    }
+    if (loadedRecords[1].bookId != 1002 ||
+        loadedRecords[1].readerId != 2002 ||
+        loadedRecords[1].status != RETURNED) {
+        return fail("loadBorrowRecords should preserve all fields of the returned record");
     }
 
     cout << "PASS: file management automated checks" << endl;

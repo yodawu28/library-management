@@ -15,7 +15,7 @@ Current source files:
 | Book module | `book.cpp` | Implemented for Sprint 2.0: add, update, delete, search, display, sort, `getBookById`, and `printBook` |
 | Reader module | `reader.cpp` | Implemented for Sprint 3.0: add, update, delete, search, display, `getReaderById`, and `printReader` |
 | Borrow / Return module | `borrow.cpp` | Implemented for Sprint 4.0: borrow flow, return flow, validation, active-borrow checks, and test-result recording |
-| File I/O module | `file.cpp` | Sprint 5.5 implements Book, Reader, and BorrowRecord save/load |
+| File I/O module | `file.cpp` | Sprint 5.6 implements save/load plus empty and malformed load handling |
 | UI / Integration | `main.cpp` | Present, pending Sprint 6.0 implementation |
 | Verification | `scripts/verify.sh` | Active deterministic syntax/header checks, architecture freshness checks, Book, Reader, Borrow, and File Management automated checks |
 | Data fixtures | `data/*.dat` | Present, currently empty |
@@ -27,9 +27,9 @@ Borrow / Return in `borrow.cpp`, including valid borrow, missing reader/book,
 unavailable book, duplicate active borrow, valid return, missing return record,
 and already-returned validation. The shared `validation.cpp` helper module owns
 simple ID, non-negative number, and empty-text checks. `file.cpp` now contains
-Book, Reader, and BorrowRecord persistence for Sprint 5.5, while `main.cpp` is
-still pending. The bottleneck analysis below separates confirmed implemented
-behavior from future module risks.
+Book, Reader, and BorrowRecord persistence plus empty/malformed load handling
+for Sprint 5.6, while `main.cpp` is still pending. The bottleneck analysis
+below separates confirmed implemented behavior from future module risks.
 
 ## 2. Confirmed Data Model
 
@@ -263,14 +263,14 @@ Borrow status uses `const int BORROWED = 1` and `const int RETURNED = 0`, and `B
 
 Recommendation:
 - Keep constants for now because they are easy to explain.
-- Add validation when loading records from file.
+- Keep the current load-time validation for `BORROWED` and `RETURNED` status values.
 - If the course allows, upgrade later to `enum class BorrowStatus`.
 
 ## 9. Security & Privacy Boundary Notes
 
 No application logging or credential handling exists. Current privacy/security risks are therefore design-time risks for the remaining modules:
 
-- File I/O should reject malformed records rather than silently creating invalid state.
+- File I/O skips malformed records instead of silently creating invalid state.
 - Menu input should validate numeric IDs and quantities before mutating vectors.
 - Verification should remain deterministic and fail closed, following `scripts/verify.sh`'s current `set -euo pipefail` and `fail()` pattern (`scripts/verify.sh:1-7`).
 
@@ -279,7 +279,7 @@ No application logging or credential handling exists. Current privacy/security r
 1. Use the completed Book Management module as the style reference for future modules.
 2. Implement Reader Management with matching validation style.
 3. Keep Borrow / Return regression checks green while moving to File I/O.
-4. Implement File I/O, including malformed input handling where practical.
+4. Keep File I/O malformed input handling covered while integrating menus.
 5. Integrate menus after individual modules behave correctly.
 6. Run `./scripts/verify.sh` before each milestone and before final submission.
 

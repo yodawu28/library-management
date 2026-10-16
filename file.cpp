@@ -1,6 +1,22 @@
 #include "library.h"
 
 #include <fstream>
+#include <sstream>
+
+bool readInteger(const string& text, int& number) {
+    istringstream stream(text);
+    char extra;
+
+    if (!(stream >> number)) {
+        return false;
+    }
+
+    if (stream >> extra) {
+        return false;
+    }
+
+    return true;
+}
 
 void saveBooks(const vector<Book>& books) {
     ofstream file("data/books.dat");
@@ -45,8 +61,17 @@ void loadBooks(vector<Book>& books) {
         book.author = line.substr(secondSeparator + 1, thirdSeparator - secondSeparator - 1);
         quantityText = line.substr(thirdSeparator + 1);
 
-        book.id = stoi(idText);
-        book.quantity = stoi(quantityText);
+        if (!readInteger(idText, book.id) ||
+            !readInteger(quantityText, book.quantity)) {
+            continue;
+        }
+
+        if (!isPositiveId(book.id) ||
+            isEmptyText(book.title) ||
+            isEmptyText(book.author) ||
+            !isNonNegativeNumber(book.quantity)) {
+            continue;
+        }
 
         books.push_back(book);
     }
@@ -90,7 +115,15 @@ void loadReaders(vector<Reader>& readers) {
         reader.name = line.substr(firstSeparator + 1, secondSeparator - firstSeparator - 1);
         reader.phone = line.substr(secondSeparator + 1);
 
-        reader.id = stoi(idText);
+        if (!readInteger(idText, reader.id)) {
+            continue;
+        }
+
+        if (!isPositiveId(reader.id) ||
+            isEmptyText(reader.name) ||
+            isEmptyText(reader.phone)) {
+            continue;
+        }
 
         readers.push_back(reader);
     }
@@ -136,9 +169,20 @@ void loadBorrowRecords(vector<BorrowRecord>& records) {
         readerIdText = line.substr(firstSeparator + 1, secondSeparator - firstSeparator - 1);
         statusText = line.substr(secondSeparator + 1);
 
-        record.bookId = stoi(bookIdText);
-        record.readerId = stoi(readerIdText);
-        record.status = stoi(statusText);
+        if (!readInteger(bookIdText, record.bookId) ||
+            !readInteger(readerIdText, record.readerId) ||
+            !readInteger(statusText, record.status)) {
+            continue;
+        }
+
+        if (record.status != BORROWED && record.status != RETURNED) {
+            continue;
+        }
+
+        if (!isPositiveId(record.bookId) ||
+            !isPositiveId(record.readerId)) {
+            continue;
+        }
 
         records.push_back(record);
     }

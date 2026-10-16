@@ -199,7 +199,7 @@ note "running borrow management automated test"
 "$TMP_DIR/borrow_management_test" || fail "borrow management automated test failed"
 
 note "building file management automated test"
-"$CXX_BIN" "${CXXFLAGS[@]}" -I. tests/automated/file_management_test.cpp file.cpp -o "$TMP_DIR/file_management_test" ||
+"$CXX_BIN" "${CXXFLAGS[@]}" -I. tests/automated/file_management_test.cpp file.cpp validation.cpp -o "$TMP_DIR/file_management_test" ||
   fail "file management automated test build failed"
 
 note "running file management automated test"

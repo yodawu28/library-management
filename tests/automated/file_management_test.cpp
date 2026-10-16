@@ -149,6 +149,89 @@ int main() {
         return fail("loadBorrowRecords should preserve all fields of the returned record");
     }
 
+    writeTextFile(booksFile, "");
+    vector<Book> emptyBooks;
+    emptyBooks.push_back({9999, "Existing Book", "Existing Author", 1});
+    loadBooks(emptyBooks);
+    if (!emptyBooks.empty()) {
+        return fail("loadBooks should leave the list empty when the file is empty");
+    }
+
+    writeTextFile(readersFile, "");
+    vector<Reader> emptyReaders;
+    emptyReaders.push_back({9999, "Existing Reader", "000"});
+    loadReaders(emptyReaders);
+    if (!emptyReaders.empty()) {
+        return fail("loadReaders should leave the list empty when the file is empty");
+    }
+
+    writeTextFile(borrowRecordsFile, "");
+    vector<BorrowRecord> emptyRecords;
+    emptyRecords.push_back({9999, 9999, BORROWED});
+    loadBorrowRecords(emptyRecords);
+    if (!emptyRecords.empty()) {
+        return fail("loadBorrowRecords should leave the list empty when the file is empty");
+    }
+
+    writeTextFile(
+        booksFile,
+        "bad line\n"
+        "abc|Broken Book|Broken Author|1\n"
+        "0|Invalid ID|Author|1\n"
+        "1006||Missing Author|1\n"
+        "1007|Missing Author||1\n"
+        "1008|Negative Quantity|Author|-1\n"
+        "1003|Refactoring|Martin Fowler|4\n"
+        "1004|Bad Quantity|Author|many\n"
+    );
+    vector<Book> validBooksFromMixedFile;
+    loadBooks(validBooksFromMixedFile);
+    if (validBooksFromMixedFile.size() != 1 ||
+        validBooksFromMixedFile[0].id != 1003 ||
+        validBooksFromMixedFile[0].title != "Refactoring" ||
+        validBooksFromMixedFile[0].author != "Martin Fowler" ||
+        validBooksFromMixedFile[0].quantity != 4) {
+        return fail("loadBooks should skip malformed lines and load valid lines");
+    }
+
+    writeTextFile(
+        readersFile,
+        "bad line\n"
+        "abc|Broken Reader|000\n"
+        "0|Invalid Reader|090\n"
+        "2004||090\n"
+        "2005|Missing Phone|\n"
+        "2003|Le Thi C|091 222 3333\n"
+    );
+    vector<Reader> validReadersFromMixedFile;
+    loadReaders(validReadersFromMixedFile);
+    if (validReadersFromMixedFile.size() != 1 ||
+        validReadersFromMixedFile[0].id != 2003 ||
+        validReadersFromMixedFile[0].name != "Le Thi C" ||
+        validReadersFromMixedFile[0].phone != "091 222 3333") {
+        return fail("loadReaders should skip malformed lines and load valid lines");
+    }
+
+    writeTextFile(
+        borrowRecordsFile,
+        "bad line\n"
+        "bad|2001|1\n"
+        "1003|bad|1\n"
+        "1004|2004|bad\n"
+        "1006|2006|9\n"
+        "0|2007|1\n"
+        "1007|0|1\n"
+        "1005|2005|1\n"
+    );
+    vector<BorrowRecord> validRecordsFromMixedFile;
+    loadBorrowRecords(validRecordsFromMixedFile);
+    if (validRecordsFromMixedFile.size() != 1 ||
+        validRecordsFromMixedFile[0].bookId != 1005 ||
+        validRecordsFromMixedFile[0].readerId != 2005 ||
+        validRecordsFromMixedFile[0].status != BORROWED) {
+        return fail("loadBorrowRecords should skip malformed lines and load valid lines");
+    }
+
     cout << "PASS: file management automated checks" << endl;
     return 0;
 }

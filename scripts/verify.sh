@@ -136,6 +136,17 @@ if grep -Eq "TC-(BR|RT)[0-9][0-9].*\| Chưa chạy \| Pending" docs/TEST_DESIGN.
   fail "docs/TEST_DESIGN.md still has pending Borrow/Return test results"
 fi
 
+note "checking File I/O manual E2E guide"
+FILE_MANAGEMENT_GUIDE="tests/e2e/file_management_manual.md"
+[[ -f "$FILE_MANAGEMENT_GUIDE" && -r "$FILE_MANAGEMENT_GUIDE" ]] ||
+  fail "missing or unreadable $FILE_MANAGEMENT_GUIDE"
+
+for test_id in TC-F01 TC-F02 TC-F03 TC-F04 TC-F05 TC-F06; do
+  if ! grep -q "$test_id" "$FILE_MANAGEMENT_GUIDE"; then
+    fail "$FILE_MANAGEMENT_GUIDE missing $test_id"
+  fi
+done
+
 TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/library-verify.XXXXXX")" || fail "cannot create temp directory"
 trap 'rm -rf "$TMP_DIR"' EXIT
 

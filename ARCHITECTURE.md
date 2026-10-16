@@ -15,9 +15,9 @@ Current source files:
 | Book module | `book.cpp` | Implemented for Sprint 2.0: add, update, delete, search, display, sort, `getBookById`, and `printBook` |
 | Reader module | `reader.cpp` | Implemented for Sprint 3.0: add, update, delete, search, display, `getReaderById`, and `printReader` |
 | Borrow / Return module | `borrow.cpp` | Implemented for Sprint 4.0: borrow flow, return flow, validation, active-borrow checks, and test-result recording |
-| File I/O module | `file.cpp` | Present, pending Sprint 5.0 implementation |
+| File I/O module | `file.cpp` | Sprint 5.3 implements Book save/load; Reader and BorrowRecord persistence remain pending |
 | UI / Integration | `main.cpp` | Present, pending Sprint 6.0 implementation |
-| Verification | `scripts/verify.sh` | Active deterministic syntax/header checks, architecture freshness checks, Book Management, Reader Management, and Borrow Management automated checks |
+| Verification | `scripts/verify.sh` | Active deterministic syntax/header checks, architecture freshness checks, Book, Reader, Borrow, and File Management automated checks |
 | Data fixtures | `data/*.dat` | Present, currently empty |
 
 Sprint 2.0 has completed Book Management in `book.cpp`. Sprint 3.0 has
@@ -26,8 +26,9 @@ search, display, `getReaderById`, and `printReader`. Sprint 4.0 has completed
 Borrow / Return in `borrow.cpp`, including valid borrow, missing reader/book,
 unavailable book, duplicate active borrow, valid return, missing return record,
 and already-returned validation. The shared `validation.cpp` helper module owns
-simple ID, non-negative number, and empty-text checks. `main.cpp` and `file.cpp`
-are still pending, so the bottleneck analysis below separates confirmed
+simple ID, non-negative number, and empty-text checks. `file.cpp` now contains
+Book persistence for Sprint 5.3, while remaining File I/O functions and
+`main.cpp` are still pending. The bottleneck analysis below separates confirmed
 implemented behavior from future module risks.
 
 ## 2. Confirmed Data Model
@@ -238,9 +239,10 @@ Recommendation:
 `scripts/verify.sh` checks each source file with `-fsyntax-only`, builds a
 header compile check, checks documentation freshness for known architecture
 drift, and builds/runs the Book Management, Reader Management, and Borrow
-Management automated regression checks. This catches module link errors, but it
-still does not link the future full application because `main.cpp` and
-`file.cpp` are not implemented yet.
+Management automated regression checks. Sprint 5.3 also builds and runs the
+File Management automated check for Book save/load behavior. This catches
+module link errors, but it still does not link the future full application
+because `main.cpp` and the remaining File I/O functions are not complete yet.
 
 Recommendation:
 - Keep adding focused module regression checks as each module is implemented.
@@ -284,10 +286,10 @@ No application logging or credential handling exists. Current privacy/security r
 ## 11. Summary
 
 The current codebase is a contract-first C++ course project with Book
-Management, Reader Management, and Borrow / Return implemented. The architecture
-remains appropriate for the assignment: flat C++ modules, shared `library.h`,
-in-memory vectors, focused automated checks, manual E2E evidence, and file
-persistence planned for the next sprint. The main future performance bottleneck
-is predictable O(n) vector scanning for lookup-heavy workflows, but that
-trade-off is acceptable at this stage and easier for the group to implement,
-test, and explain.
+Management, Reader Management, Borrow / Return, and Book file persistence
+implemented. The architecture remains appropriate for the assignment: flat C++
+modules, shared `library.h`, in-memory vectors, focused automated checks,
+manual E2E evidence, and simple text-file persistence. The main future
+performance bottleneck is predictable O(n) vector scanning for lookup-heavy
+workflows, but that trade-off is acceptable at this stage and easier for the
+group to implement, test, and explain.

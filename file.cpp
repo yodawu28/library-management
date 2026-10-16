@@ -51,3 +51,47 @@ void loadBooks(vector<Book>& books) {
         books.push_back(book);
     }
 }
+
+void saveReaders(const vector<Reader>& readers) {
+    ofstream file("data/readers.dat");
+    if (!file) {
+        return;
+    }
+
+    for (const Reader& reader : readers) {
+        file << reader.id << "|"
+             << reader.name << "|"
+             << reader.phone << endl;
+    }
+}
+
+void loadReaders(vector<Reader>& readers) {
+    ifstream file("data/readers.dat");
+    if (!file) {
+        return;
+    }
+
+    readers.clear();
+
+    string line;
+    while (getline(file, line)) {
+        Reader reader;
+        string idText;
+
+        size_t firstSeparator = line.find('|');
+        size_t secondSeparator = line.find('|', firstSeparator + 1);
+
+        if (firstSeparator == string::npos ||
+            secondSeparator == string::npos) {
+            continue;
+        }
+
+        idText = line.substr(0, firstSeparator);
+        reader.name = line.substr(firstSeparator + 1, secondSeparator - firstSeparator - 1);
+        reader.phone = line.substr(secondSeparator + 1);
+
+        reader.id = stoi(idText);
+
+        readers.push_back(reader);
+    }
+}

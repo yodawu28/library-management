@@ -38,6 +38,8 @@ struct FileBackup {
 void verifyFileManagementFunctionsAreLinked() {
     (void)static_cast<void (*)(const vector<Book>&)>(&saveBooks);
     (void)static_cast<void (*)(vector<Book>&)>(&loadBooks);
+    (void)static_cast<void (*)(const vector<Reader>&)>(&saveReaders);
+    (void)static_cast<void (*)(vector<Reader>&)>(&loadReaders);
 }
 
 int main() {
@@ -45,6 +47,8 @@ int main() {
 
     const string booksFile = "data/books.dat";
     FileBackup booksFileBackup(booksFile);
+    const string readersFile = "data/readers.dat";
+    FileBackup readersFileBackup(readersFile);
 
     vector<Book> books;
     books.push_back({1001, "Clean Code", "Robert C. Martin", 3});
@@ -77,6 +81,37 @@ int main() {
         loadedBooks[1].author != "Steve McConnell" ||
         loadedBooks[1].quantity != 2) {
         return fail("loadBooks should preserve all fields of the second book");
+    }
+
+    vector<Reader> readers;
+    readers.push_back({2001, "Nguyen Van An", "090 123 4567"});
+    readers.push_back({2002, "Tran Thi B, QA", "+84 98 765 4321"});
+
+    saveReaders(readers);
+
+    string savedReadersFile = readTextFile(readersFile);
+    if (savedReadersFile.find("2001|Nguyen Van An|090 123 4567") == string::npos) {
+        return fail("saveReaders should write the first reader using the agreed text format");
+    }
+    if (savedReadersFile.find("2002|Tran Thi B, QA|+84 98 765 4321") == string::npos) {
+        return fail("saveReaders should write the second reader using the agreed text format");
+    }
+
+    vector<Reader> loadedReaders;
+    loadReaders(loadedReaders);
+
+    if (loadedReaders.size() != 2) {
+        return fail("loadReaders should load two saved readers");
+    }
+    if (loadedReaders[0].id != 2001 ||
+        loadedReaders[0].name != "Nguyen Van An" ||
+        loadedReaders[0].phone != "090 123 4567") {
+        return fail("loadReaders should preserve all fields of the first reader");
+    }
+    if (loadedReaders[1].id != 2002 ||
+        loadedReaders[1].name != "Tran Thi B, QA" ||
+        loadedReaders[1].phone != "+84 98 765 4321") {
+        return fail("loadReaders should preserve all fields of the second reader");
     }
 
     cout << "PASS: file management automated checks" << endl;

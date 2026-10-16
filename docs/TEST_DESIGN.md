@@ -77,12 +77,12 @@ lại sau Sprint 6.0 khi menu integration hoàn tất.
 
 | Test ID | Chức năng | Input | Expected Result | Actual Result | Status |
 | --- | --- | --- | --- | --- | --- |
-| TC-F01 | Save Books | Danh sách books có dữ liệu | `data/books.dat` được cập nhật | Chưa chạy | Pending |
-| TC-F02 | Load Books | `data/books.dat` có dữ liệu hợp lệ | Load đúng danh sách books | Chưa chạy | Pending |
-| TC-F03 | Save Readers | Danh sách readers có dữ liệu | `data/readers.dat` được cập nhật | Chưa chạy | Pending |
-| TC-F04 | Load Readers | `data/readers.dat` có dữ liệu hợp lệ | Load đúng danh sách readers | Chưa chạy | Pending |
-| TC-F05 | Save Borrow Records | Danh sách records có dữ liệu | `data/borrow_records.dat` được cập nhật | Chưa chạy | Pending |
-| TC-F06 | Load Borrow Records | File records có dữ liệu hợp lệ | Load đúng danh sách records | Chưa chạy | Pending |
+| TC-F01 | Save Books | Danh sách books có dữ liệu | `data/books.dat` được cập nhật | Focused module check ghi đúng `1001\|Clean Code\|Robert C. Martin\|3` và `1002\|Code Complete\|Steve McConnell\|2` vào `data/books.dat` | Pass |
+| TC-F02 | Load Books | `data/books.dat` có dữ liệu hợp lệ | Load đúng danh sách books | Focused module check load lại 2 books, giữ đúng ID, title, author và quantity của từng sách | Pass |
+| TC-F03 | Save Readers | Danh sách readers có dữ liệu | `data/readers.dat` được cập nhật | Focused module check ghi đúng `2001\|Nguyen Van An\|090 123 4567` và reader có dấu comma trong tên vào `data/readers.dat` | Pass |
+| TC-F04 | Load Readers | `data/readers.dat` có dữ liệu hợp lệ | Load đúng danh sách readers | Focused module check load lại 2 readers, giữ đúng ID, name và phone kể cả phone có khoảng trắng | Pass |
+| TC-F05 | Save Borrow Records | Danh sách records có dữ liệu | `data/borrow_records.dat` được cập nhật | Focused module check ghi đúng record `BORROWED` dạng `1001\|2001\|1` và record `RETURNED` dạng `1002\|2002\|0` | Pass |
+| TC-F06 | Load Borrow Records | File records có dữ liệu hợp lệ | Load đúng danh sách records | Focused module check load lại 2 borrow records, giữ đúng bookId, readerId và status `BORROWED` / `RETURNED` | Pass |
 
 ## 6. Integration Test Cases
 

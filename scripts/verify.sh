@@ -147,6 +147,10 @@ for test_id in TC-F01 TC-F02 TC-F03 TC-F04 TC-F05 TC-F06; do
   fi
 done
 
+if grep -Eq "TC-F0[1-6].*\| Chưa chạy \| Pending" docs/TEST_DESIGN.md; then
+  fail "docs/TEST_DESIGN.md still has pending File I/O test results"
+fi
+
 TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/library-verify.XXXXXX")" || fail "cannot create temp directory"
 trap 'rm -rf "$TMP_DIR"' EXIT
 

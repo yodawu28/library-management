@@ -48,5 +48,5 @@
 - Ghi kết quả TC-F01 đến TC-F06 trong `docs/TEST_DESIGN.md`.
 
 ## Planned
-- Integrate menus in `main.cpp`.
+- Integrate startup and menus in `main.cpp` / `menu.cpp`.
 - Record manual test-case results and screenshots for the final report.

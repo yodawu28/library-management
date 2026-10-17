@@ -17,7 +17,7 @@ CXX_BIN="${CXX:-c++}"
 command -v "$CXX_BIN" >/dev/null 2>&1 || fail "C++ compiler not found: $CXX_BIN"
 
 HEADER="library.h"
-SOURCES=(main.cpp book.cpp reader.cpp borrow.cpp file.cpp validation.cpp)
+SOURCES=(main.cpp menu.cpp book.cpp reader.cpp borrow.cpp file.cpp validation.cpp)
 DATA_FILES=(data/books.dat data/readers.dat data/borrow_records.dat)
 TEST_SOURCES=(
   tests/automated/book_management_test.cpp
@@ -226,7 +226,7 @@ note "running file management automated test"
 "$TMP_DIR/file_management_test" || fail "file management automated test failed"
 
 note "building menu management automated test"
-"$CXX_BIN" "${CXXFLAGS[@]}" -DLIBRARY_MANAGEMENT_TEST -I. tests/automated/menu_management_test.cpp main.cpp book.cpp reader.cpp borrow.cpp file.cpp validation.cpp -o "$TMP_DIR/menu_management_test" ||
+"$CXX_BIN" "${CXXFLAGS[@]}" -DLIBRARY_MANAGEMENT_TEST -I. tests/automated/menu_management_test.cpp main.cpp menu.cpp book.cpp reader.cpp borrow.cpp file.cpp validation.cpp -o "$TMP_DIR/menu_management_test" ||
   fail "menu management automated test build failed"
 
 note "running menu management automated test"

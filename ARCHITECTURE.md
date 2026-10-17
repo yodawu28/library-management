@@ -16,8 +16,8 @@ Current source files:
 | Reader module | `reader.cpp` | Implemented for Sprint 3.0: add, update, delete, search, display, `getReaderById`, and `printReader` |
 | Borrow / Return module | `borrow.cpp` | Implemented for Sprint 4.0: borrow flow, return flow, validation, active-borrow checks, and test-result recording |
 | File I/O module | `file.cpp` | Sprint 5.0 complete: save/load, malformed-data handling, manual E2E guide, and TC-F01 through TC-F06 recorded |
-| UI / Integration | `main.cpp` | Present, pending Sprint 6.0 implementation |
-| Verification | `scripts/verify.sh` | Active deterministic syntax/header checks, architecture freshness checks, Book, Reader, Borrow, and File Management automated checks |
+| UI / Integration | `main.cpp`, `menu.cpp` | Sprint 6.0 started: `main.cpp` owns the program entry point; `menu.cpp` owns console menu functions |
+| Verification | `scripts/verify.sh` | Active deterministic syntax/header checks, architecture freshness checks, Book, Reader, Borrow, File, and Menu Management automated checks |
 | Data fixtures | `data/*.dat` | Present, currently empty |
 
 Sprint 2.0 has completed Book Management in `book.cpp`. Sprint 3.0 has
@@ -29,7 +29,8 @@ and already-returned validation. The shared `validation.cpp` helper module owns
 simple ID, non-negative number, and empty-text checks. `file.cpp` now contains
 Book, Reader, and BorrowRecord persistence plus empty, malformed, and
 domain-invalid load handling for Sprint 5.0. The File I/O manual E2E guide and
-TC-F01 through TC-F06 results are recorded, while `main.cpp` is still pending.
+TC-F01 through TC-F06 results are recorded, while Sprint 6.0 has started with a
+small menu scaffold in `menu.cpp` and the program entry point in `main.cpp`.
 The bottleneck analysis
 below separates confirmed implemented behavior from future module risks.
 
@@ -88,7 +89,8 @@ The current architecture is function-module based rather than class/OOP based.
 ```mermaid
 flowchart TD
     User[Console User]
-    Main[main.cpp\nmainMenu]
+    Main[main.cpp\nmain]
+    Menu[menu.cpp\nmainMenu/bookMenu/readerMenu]
     Book[book.cpp\nBook Management]
     Reader[reader.cpp\nReader Management]
     Validation[validation.cpp\nValidation Helpers]
@@ -98,10 +100,11 @@ flowchart TD
     Data[(data/*.dat)]
 
     User --> Main
-    Main --> Book
-    Main --> Reader
-    Main --> Borrow
-    Main --> File
+    Main --> Menu
+    Menu --> Book
+    Menu --> Reader
+    Menu --> Borrow
+    Menu --> File
 
     Book --> Header
     Reader --> Header
@@ -109,6 +112,7 @@ flowchart TD
     Borrow --> Header
     File --> Header
     Main --> Header
+    Menu --> Header
 
     Book --> Validation
     Reader --> Validation
@@ -240,13 +244,11 @@ Recommendation:
 
 `scripts/verify.sh` checks each source file with `-fsyntax-only`, builds a
 header compile check, checks documentation freshness for known architecture
-drift, and builds/runs the Book Management, Reader Management, and Borrow
-Management automated regression checks. By Sprint 5.0 completion, it also
-builds and runs the File Management automated check for Book, Reader, and
-BorrowRecord save/load behavior, empty-file handling, malformed-line skipping,
-and domain-invalid persisted data. This catches module link errors, but it
-still does not link the future full application because `main.cpp` is not
-complete yet.
+drift, and builds/runs the Book Management, Reader Management, Borrow
+Management, File Management, and Menu Management automated regression checks.
+This catches module link errors for implemented menu functions, but it still
+does not link the final full application workflow until startup load and menu
+routing are complete.
 
 Recommendation:
 - Keep adding focused module regression checks as each module is implemented.

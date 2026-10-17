@@ -20,6 +20,7 @@
 ```text
 LibraryManagement/
 ├── main.cpp
+├── menu.cpp
 ├── library.h
 ├── book.cpp
 ├── reader.cpp
@@ -44,7 +45,7 @@ LibraryManagement/
 | Member 1 | Book Management | `book.cpp` |
 | Member 2 | Reader Management | `reader.cpp` |
 | Member 3 | Borrow / Return | `borrow.cpp` |
-| Member 4 | File I/O + Integration | `file.cpp`, `main.cpp` |
+| Member 4 | File I/O + Integration | `file.cpp`, `main.cpp`, `menu.cpp` |
 
 `library.h` là contract chung của cả nhóm, chỉ nên thay đổi khi nhóm đã thống nhất.
 

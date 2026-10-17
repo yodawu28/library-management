@@ -29,7 +29,8 @@ Data
 File
 ```
 
-Các module không tự ý xử lý trách nhiệm của nhau. `main.cpp` điều phối menu, các file module xử lý nghiệp vụ riêng.
+Các module không tự ý xử lý trách nhiệm của nhau. `main.cpp` khởi động chương
+trình, `menu.cpp` điều phối menu, các file module xử lý nghiệp vụ riêng.
 
 ## 2. Data Model
 
@@ -194,10 +195,12 @@ Ví dụ:
 
 Sprint 5.0 chỉ implement các hàm save/load trong `file.cpp`. Việc gọi load khi
 khởi động chương trình, gọi save từ menu, hoặc tự động save khi thoát sẽ thuộc
-Sprint 6.0 khi tích hợp `main.cpp`.
+Sprint 6.0 khi tích hợp `main.cpp` và `menu.cpp`.
 
 ### 3.6 User Interface
-File: `main.cpp`
+File:
+- `main.cpp`: điểm bắt đầu chương trình.
+- `menu.cpp`: giao diện menu console và điều hướng chức năng.
 
 Function:
 - `main()`.

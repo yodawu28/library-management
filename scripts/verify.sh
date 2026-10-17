@@ -24,6 +24,7 @@ TEST_SOURCES=(
   tests/automated/reader_management_test.cpp
   tests/automated/borrow_management_test.cpp
   tests/automated/file_management_test.cpp
+  tests/automated/menu_management_test.cpp
 )
 CXXFLAGS=(-std=c++17 -Wall -Wextra -Werror -pedantic)
 
@@ -223,5 +224,12 @@ note "building file management automated test"
 
 note "running file management automated test"
 "$TMP_DIR/file_management_test" || fail "file management automated test failed"
+
+note "building menu management automated test"
+"$CXX_BIN" "${CXXFLAGS[@]}" -DLIBRARY_MANAGEMENT_TEST -I. tests/automated/menu_management_test.cpp main.cpp book.cpp reader.cpp borrow.cpp file.cpp validation.cpp -o "$TMP_DIR/menu_management_test" ||
+  fail "menu management automated test build failed"
+
+note "running menu management automated test"
+"$TMP_DIR/menu_management_test" || fail "menu management automated test failed"
 
 note "ACCEPTED: deterministic verification passed"

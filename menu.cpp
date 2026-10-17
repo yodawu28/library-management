@@ -26,8 +26,20 @@ void bookMenu(LibraryData& data) {
             return;
         }
 
-        if (choice != 0) {
-            cout << "This menu option will be implemented in Sprint 6." << endl;
+        if (choice == 1) {
+            addBook(data.books);
+        } else if (choice == 2) {
+            updateBook(data.books);
+        } else if (choice == 3) {
+            deleteBook(data);
+        } else if (choice == 4) {
+            searchBook(data.books);
+        } else if (choice == 5) {
+            displayBooks(data.books);
+        } else if (choice == 6) {
+            sortBooks(data.books);
+        } else if (choice != 0) {
+            cout << "Invalid choice." << endl;
         }
     } while (choice != 0);
 }

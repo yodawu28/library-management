@@ -16,7 +16,7 @@ Current source files:
 | Reader module | `reader.cpp` | Implemented for Sprint 3.0: add, update, delete, search, display, `getReaderById`, and `printReader` |
 | Borrow / Return module | `borrow.cpp` | Implemented for Sprint 4.0: borrow flow, return flow, validation, active-borrow checks, and test-result recording |
 | File I/O module | `file.cpp` | Sprint 5.0 complete: save/load, malformed-data handling, manual E2E guide, and TC-F01 through TC-F06 recorded |
-| UI / Integration | `main.cpp`, `menu.cpp` | Sprint 6.0 started: `main.cpp` owns the program entry point; `menu.cpp` owns console menu functions |
+| UI / Integration | `main.cpp`, `menu.cpp` | Sprint 6.0 in progress: `main.cpp` loads startup data and enters the menu; `menu.cpp` owns console menu functions |
 | Verification | `scripts/verify.sh` | Active deterministic syntax/header checks, architecture freshness checks, Book, Reader, Borrow, File, and Menu Management automated checks |
 | Data fixtures | `data/*.dat` | Present, currently empty |
 
@@ -30,7 +30,7 @@ simple ID, non-negative number, and empty-text checks. `file.cpp` now contains
 Book, Reader, and BorrowRecord persistence plus empty, malformed, and
 domain-invalid load handling for Sprint 5.0. The File I/O manual E2E guide and
 TC-F01 through TC-F06 results are recorded, while Sprint 6.0 has started with a
-small menu scaffold in `menu.cpp` and the program entry point in `main.cpp`.
+small menu scaffold in `menu.cpp` and startup loading in `main.cpp`.
 The bottleneck analysis
 below separates confirmed implemented behavior from future module risks.
 
@@ -246,9 +246,9 @@ Recommendation:
 header compile check, checks documentation freshness for known architecture
 drift, and builds/runs the Book Management, Reader Management, Borrow
 Management, File Management, and Menu Management automated regression checks.
-This catches module link errors for implemented menu functions, but it still
-does not link the final full application workflow until startup load and menu
-routing are complete.
+This catches module link errors for implemented menu functions and startup
+loading, but final user navigation still depends on the remaining menu routing
+tasks.
 
 Recommendation:
 - Keep adding focused module regression checks as each module is implemented.

@@ -232,4 +232,15 @@ note "building menu management automated test"
 note "running menu management automated test"
 "$TMP_DIR/menu_management_test" || fail "menu management automated test failed"
 
+note "building startup load automated test"
+"$CXX_BIN" "${CXXFLAGS[@]}" -DSTARTUP_LOAD_TEST -I. -c tests/automated/menu_management_test.cpp -o "$TMP_DIR/startup_load_test.o" ||
+  fail "startup load automated test build failed"
+"$CXX_BIN" "${CXXFLAGS[@]}" -Dmain=libraryProgramMain -I. -c main.cpp -o "$TMP_DIR/main_startup_load.o" ||
+  fail "startup load main build failed"
+"$CXX_BIN" "${CXXFLAGS[@]}" "$TMP_DIR/startup_load_test.o" "$TMP_DIR/main_startup_load.o" -o "$TMP_DIR/startup_load_test" ||
+  fail "startup load automated test link failed"
+
+note "running startup load automated test"
+"$TMP_DIR/startup_load_test" || fail "startup load automated test failed"
+
 note "ACCEPTED: deterministic verification passed"

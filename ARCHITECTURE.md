@@ -15,7 +15,7 @@ Current source files:
 | Book module | `book.cpp` | Implemented for Sprint 2.0: add, update, delete, search, display, sort, `getBookById`, and `printBook` |
 | Reader module | `reader.cpp` | Implemented for Sprint 3.0: add, update, delete, search, display, `getReaderById`, and `printReader` |
 | Borrow / Return module | `borrow.cpp` | Implemented for Sprint 4.0: borrow flow, return flow, validation, active-borrow checks, and test-result recording |
-| File I/O module | `file.cpp` | Sprint 5.6 implements save/load plus empty and malformed load handling |
+| File I/O module | `file.cpp` | Sprint 5.0 complete: save/load, malformed-data handling, manual E2E guide, and TC-F01 through TC-F06 recorded |
 | UI / Integration | `main.cpp` | Present, pending Sprint 6.0 implementation |
 | Verification | `scripts/verify.sh` | Active deterministic syntax/header checks, architecture freshness checks, Book, Reader, Borrow, and File Management automated checks |
 | Data fixtures | `data/*.dat` | Present, currently empty |
@@ -27,8 +27,10 @@ Borrow / Return in `borrow.cpp`, including valid borrow, missing reader/book,
 unavailable book, duplicate active borrow, valid return, missing return record,
 and already-returned validation. The shared `validation.cpp` helper module owns
 simple ID, non-negative number, and empty-text checks. `file.cpp` now contains
-Book, Reader, and BorrowRecord persistence plus empty/malformed load handling
-for Sprint 5.6, while `main.cpp` is still pending. The bottleneck analysis
+Book, Reader, and BorrowRecord persistence plus empty, malformed, and
+domain-invalid load handling for Sprint 5.0. The File I/O manual E2E guide and
+TC-F01 through TC-F06 results are recorded, while `main.cpp` is still pending.
+The bottleneck analysis
 below separates confirmed implemented behavior from future module risks.
 
 ## 2. Confirmed Data Model
@@ -239,10 +241,12 @@ Recommendation:
 `scripts/verify.sh` checks each source file with `-fsyntax-only`, builds a
 header compile check, checks documentation freshness for known architecture
 drift, and builds/runs the Book Management, Reader Management, and Borrow
-Management automated regression checks. By Sprint 5.5, it also builds and runs
-the File Management automated check for Book, Reader, and BorrowRecord save/load
-behavior. This catches module link errors, but it still does not link the
-future full application because `main.cpp` is not complete yet.
+Management automated regression checks. By Sprint 5.0 completion, it also
+builds and runs the File Management automated check for Book, Reader, and
+BorrowRecord save/load behavior, empty-file handling, malformed-line skipping,
+and domain-invalid persisted data. This catches module link errors, but it
+still does not link the future full application because `main.cpp` is not
+complete yet.
 
 Recommendation:
 - Keep adding focused module regression checks as each module is implemented.

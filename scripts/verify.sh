@@ -79,6 +79,10 @@ if grep -Eq "Borrow / Return module.*In progress|Sprint 4\.0 is implementing|rem
   fail "ARCHITECTURE.md still describes Borrow/Return as unfinished"
 fi
 
+if grep -Eq "Sprint 5\.6|By Sprint 5\.5" ARCHITECTURE.md; then
+  fail "ARCHITECTURE.md still describes stale Sprint 5 File I/O status"
+fi
+
 if grep -Eq "library\.h:[0-9]" ARCHITECTURE.md; then
   fail "ARCHITECTURE.md uses fragile library.h line references"
 fi

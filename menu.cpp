@@ -83,6 +83,39 @@ void readerMenu(LibraryData& data) {
     } while (choice != 0);
 }
 
+void displayBorrowRecords(const vector<BorrowRecord>& records) {
+    if (records.empty()) {
+        cout << "No borrow records available." << endl;
+        return;
+    }
+
+    cout << "Borrow Record List" << endl;
+    for (const BorrowRecord& record : records) {
+        cout << "Book ID: " << record.bookId << endl;
+        cout << "Reader ID: " << record.readerId << endl;
+        cout << "Status: ";
+        if (record.status == BORROWED) {
+            cout << "Borrowed" << endl;
+        } else {
+            cout << "Returned" << endl;
+        }
+        cout << "------------------------------" << endl;
+    }
+}
+
+void displayAllData(const LibraryData& data) {
+    displayBooks(data.books);
+    displayReaders(data.readers);
+    displayBorrowRecords(data.borrowRecords);
+}
+
+void saveAllData(const LibraryData& data) {
+    saveBooks(data.books);
+    saveReaders(data.readers);
+    saveBorrowRecords(data.borrowRecords);
+    cout << "Data saved successfully." << endl;
+}
+
 void mainMenu(LibraryData& data) {
     int choice;
 
@@ -113,6 +146,10 @@ void mainMenu(LibraryData& data) {
             borrowBook(data);
         } else if (choice == 4) {
             returnBook(data);
+        } else if (choice == 5) {
+            displayAllData(data);
+        } else if (choice == 6) {
+            saveAllData(data);
         } else if (choice != 0) {
             cout << "This menu option will be implemented in Sprint 6." << endl;
         }

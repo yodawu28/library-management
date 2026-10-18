@@ -1,5 +1,6 @@
 #include "library.h"
 
+#include <fstream>
 #include <iostream>
 #include <sstream>
 
@@ -83,6 +84,32 @@ int fail(const string& message) {
 bool containsText(const string& text, const string& keyword) {
     return text.find(keyword) != string::npos;
 }
+
+string readTextFile(const string& filename) {
+    ifstream file(filename);
+    ostringstream content;
+    content << file.rdbuf();
+    return content.str();
+}
+
+void writeTextFile(const string& filename, const string& content) {
+    ofstream file(filename);
+    file << content;
+}
+
+struct FileBackup {
+    string filename;
+    string originalContent;
+
+    FileBackup(const string& fileToBackup) {
+        filename = fileToBackup;
+        originalContent = readTextFile(filename);
+    }
+
+    ~FileBackup() {
+        writeTextFile(filename, originalContent);
+    }
+};
 
 string runBookMenuWithInput(LibraryData& data, const string& input) {
     istringstream inputStream(input);
@@ -398,6 +425,39 @@ int main() {
     }
     if (!containsText(mainReturnOutput, "Book returned successfully")) {
         return fail("mainMenu Return Book option should print return success message");
+    }
+
+    LibraryData mainDisplayData;
+    mainDisplayData.books.push_back({1001, "Clean Code", "Robert C. Martin", 2});
+    mainDisplayData.readers.push_back({2001, "Nguyen Van An", "0901234567"});
+    mainDisplayData.borrowRecords.push_back({1001, 2001, BORROWED});
+    string mainDisplayOutput = runMainMenuWithInput(mainDisplayData, "5\n0\n");
+    if (!containsText(mainDisplayOutput, "Book List") ||
+        !containsText(mainDisplayOutput, "Clean Code") ||
+        !containsText(mainDisplayOutput, "Reader List") ||
+        !containsText(mainDisplayOutput, "Nguyen Van An") ||
+        !containsText(mainDisplayOutput, "Borrow Record List") ||
+        !containsText(mainDisplayOutput, "Book ID: 1001") ||
+        !containsText(mainDisplayOutput, "Reader ID: 2001")) {
+        return fail("mainMenu Display Data option should print all LibraryData lists");
+    }
+
+    FileBackup booksFileBackup("data/books.dat");
+    FileBackup readersFileBackup("data/readers.dat");
+    FileBackup borrowRecordsFileBackup("data/borrow_records.dat");
+
+    LibraryData mainSaveData;
+    mainSaveData.books.push_back({1003, "Refactoring", "Martin Fowler", 4});
+    mainSaveData.readers.push_back({2003, "Le Thi C", "0912223333"});
+    mainSaveData.borrowRecords.push_back({1003, 2003, RETURNED});
+    string mainSaveOutput = runMainMenuWithInput(mainSaveData, "6\n0\n");
+    if (!containsText(mainSaveOutput, "Data saved successfully")) {
+        return fail("mainMenu Save Data option should print save success message");
+    }
+    if (!containsText(readTextFile("data/books.dat"), "1003|Refactoring|Martin Fowler|4") ||
+        !containsText(readTextFile("data/readers.dat"), "2003|Le Thi C|0912223333") ||
+        !containsText(readTextFile("data/borrow_records.dat"), "1003|2003|0")) {
+        return fail("mainMenu Save Data option should save books, readers, and borrow records");
     }
 
     cout << "PASS: menu management automated checks" << endl;

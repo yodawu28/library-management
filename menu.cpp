@@ -67,8 +67,18 @@ void readerMenu(LibraryData& data) {
             return;
         }
 
-        if (choice != 0) {
-            cout << "This menu option will be implemented in Sprint 6." << endl;
+        if (choice == 1) {
+            addReader(data.readers);
+        } else if (choice == 2) {
+            updateReader(data.readers);
+        } else if (choice == 3) {
+            deleteReader(data);
+        } else if (choice == 4) {
+            searchReader(data.readers);
+        } else if (choice == 5) {
+            displayReaders(data.readers);
+        } else if (choice != 0) {
+            cout << "Invalid choice." << endl;
         }
     } while (choice != 0);
 }

@@ -252,6 +252,95 @@ int main() {
         return fail("readerMenu Back option should not change reader data");
     }
 
+    LibraryData addReaderData;
+    string addReaderOutput = runReaderMenuWithInput(
+        addReaderData,
+        "1\n"
+        "2001\n"
+        "Nguyen Van An\n"
+        "0901234567\n"
+        "0\n"
+    );
+    if (addReaderData.readers.size() != 1 ||
+        addReaderData.readers[0].id != 2001 ||
+        addReaderData.readers[0].name != "Nguyen Van An" ||
+        addReaderData.readers[0].phone != "0901234567") {
+        return fail("readerMenu Add Reader option should call addReader with data.readers");
+    }
+    if (!containsText(addReaderOutput, "Reader added successfully")) {
+        return fail("readerMenu Add Reader option should print add success message");
+    }
+
+    LibraryData updateReaderData;
+    updateReaderData.readers.push_back({2001, "Nguyen Van An", "0901234567"});
+    string updateReaderOutput = runReaderMenuWithInput(
+        updateReaderData,
+        "2\n"
+        "2001\n"
+        "Nguyen Van An Updated\n"
+        "0912345678\n"
+        "0\n"
+    );
+    if (updateReaderData.readers[0].name != "Nguyen Van An Updated" ||
+        updateReaderData.readers[0].phone != "0912345678") {
+        return fail("readerMenu Update Reader option should call updateReader with data.readers");
+    }
+    if (!containsText(updateReaderOutput, "Reader updated successfully")) {
+        return fail("readerMenu Update Reader option should print update success message");
+    }
+
+    LibraryData protectedReaderDeleteData;
+    protectedReaderDeleteData.readers.push_back({2001, "Nguyen Van An", "0901234567"});
+    protectedReaderDeleteData.borrowRecords.push_back({1001, 2001, BORROWED});
+    string protectedReaderDeleteOutput = runReaderMenuWithInput(
+        protectedReaderDeleteData,
+        "3\n"
+        "2001\n"
+        "0\n"
+    );
+    if (protectedReaderDeleteData.readers.size() != 1) {
+        return fail("readerMenu Delete Reader option should use active-borrow-aware deleteReader");
+    }
+    if (!containsText(protectedReaderDeleteOutput, "Reader is currently borrowing books")) {
+        return fail("readerMenu Delete Reader option should reject readers with active borrows");
+    }
+
+    LibraryData deleteReaderData;
+    deleteReaderData.readers.push_back({2001, "Nguyen Van An", "0901234567"});
+    string deleteReaderOutput = runReaderMenuWithInput(
+        deleteReaderData,
+        "3\n"
+        "2001\n"
+        "0\n"
+    );
+    if (!deleteReaderData.readers.empty()) {
+        return fail("readerMenu Delete Reader option should remove a reader without active borrows");
+    }
+    if (!containsText(deleteReaderOutput, "Reader deleted successfully")) {
+        return fail("readerMenu Delete Reader option should print delete success message");
+    }
+
+    LibraryData searchReaderData;
+    searchReaderData.readers.push_back({2001, "Nguyen Van An", "0901234567"});
+    string searchReaderOutput = runReaderMenuWithInput(
+        searchReaderData,
+        "4\n"
+        "1\n"
+        "2001\n"
+        "0\n"
+    );
+    if (!containsText(searchReaderOutput, "Nguyen Van An")) {
+        return fail("readerMenu Search Reader option should call searchReader with data.readers");
+    }
+
+    LibraryData displayReaderData;
+    displayReaderData.readers.push_back({2001, "Nguyen Van An", "0901234567"});
+    string displayReaderOutput = runReaderMenuWithInput(displayReaderData, "5\n0\n");
+    if (!containsText(displayReaderOutput, "Reader List") ||
+        !containsText(displayReaderOutput, "Nguyen Van An")) {
+        return fail("readerMenu Display Readers option should call displayReaders with data.readers");
+    }
+
     LibraryData mainData;
     string mainMenuOutput = runMainMenuWithInput(mainData, "0\n");
     if (!containsText(mainMenuOutput, "LIBRARY MANAGEMENT SYSTEM") ||

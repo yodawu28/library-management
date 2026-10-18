@@ -348,6 +348,58 @@ int main() {
         return fail("mainMenu should display the Main Menu and allow Exit");
     }
 
+    LibraryData mainBookData;
+    string mainBookOutput = runMainMenuWithInput(mainBookData, "1\n0\n0\n");
+    if (!containsText(mainBookOutput, "BOOK MANAGEMENT")) {
+        return fail("mainMenu Book Management option should open bookMenu");
+    }
+
+    LibraryData mainReaderData;
+    string mainReaderOutput = runMainMenuWithInput(mainReaderData, "2\n0\n0\n");
+    if (!containsText(mainReaderOutput, "READER MANAGEMENT")) {
+        return fail("mainMenu Reader Management option should open readerMenu");
+    }
+
+    LibraryData mainBorrowData;
+    mainBorrowData.books.push_back({1001, "Clean Code", "Robert C. Martin", 2});
+    mainBorrowData.readers.push_back({2001, "Nguyen Van An", "0901234567"});
+    string mainBorrowOutput = runMainMenuWithInput(
+        mainBorrowData,
+        "3\n"
+        "2001\n"
+        "1001\n"
+        "0\n"
+    );
+    if (mainBorrowData.borrowRecords.size() != 1 ||
+        mainBorrowData.borrowRecords[0].readerId != 2001 ||
+        mainBorrowData.borrowRecords[0].bookId != 1001 ||
+        mainBorrowData.borrowRecords[0].status != BORROWED ||
+        mainBorrowData.books[0].quantity != 1) {
+        return fail("mainMenu Borrow Book option should call borrowBook with LibraryData");
+    }
+    if (!containsText(mainBorrowOutput, "Book borrowed successfully")) {
+        return fail("mainMenu Borrow Book option should print borrow success message");
+    }
+
+    LibraryData mainReturnData;
+    mainReturnData.books.push_back({1001, "Clean Code", "Robert C. Martin", 1});
+    mainReturnData.readers.push_back({2001, "Nguyen Van An", "0901234567"});
+    mainReturnData.borrowRecords.push_back({1001, 2001, BORROWED});
+    string mainReturnOutput = runMainMenuWithInput(
+        mainReturnData,
+        "4\n"
+        "2001\n"
+        "1001\n"
+        "0\n"
+    );
+    if (mainReturnData.borrowRecords[0].status != RETURNED ||
+        mainReturnData.books[0].quantity != 2) {
+        return fail("mainMenu Return Book option should call returnBook with LibraryData");
+    }
+    if (!containsText(mainReturnOutput, "Book returned successfully")) {
+        return fail("mainMenu Return Book option should print return success message");
+    }
+
     cout << "PASS: menu management automated checks" << endl;
     return 0;
 }

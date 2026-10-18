@@ -84,8 +84,6 @@ void readerMenu(LibraryData& data) {
 }
 
 void mainMenu(LibraryData& data) {
-    (void)data;
-
     int choice;
 
     do {
@@ -107,7 +105,15 @@ void mainMenu(LibraryData& data) {
             return;
         }
 
-        if (choice != 0) {
+        if (choice == 1) {
+            bookMenu(data);
+        } else if (choice == 2) {
+            readerMenu(data);
+        } else if (choice == 3) {
+            borrowBook(data);
+        } else if (choice == 4) {
+            returnBook(data);
+        } else if (choice != 0) {
             cout << "This menu option will be implemented in Sprint 6." << endl;
         }
     } while (choice != 0);

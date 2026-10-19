@@ -88,11 +88,11 @@ lại sau Sprint 6.0 khi menu integration hoàn tất.
 
 | Test ID | Scenario | Steps | Expected Result | Actual Result | Status |
 | --- | --- | --- | --- | --- | --- |
-| TC-I01 | Add then display book | Add Book → Display Books | Book vừa thêm xuất hiện | Chưa chạy | Pending |
-| TC-I02 | Add reader then borrow book | Add Reader → Add Book → Borrow Book | Record được tạo, quantity giảm | Chưa chạy | Pending |
-| TC-I03 | Borrow then return book | Borrow Book → Return Book | Record chuyển `RETURNED`, quantity tăng | Chưa chạy | Pending |
-| TC-I04 | Save then reload | Save Data → restart program → Load Data | Dữ liệu vẫn còn | Chưa chạy | Pending |
-| TC-I05 | Invalid menu choice | Nhập lựa chọn ngoài menu | Báo lỗi và hiển thị lại menu | Chưa chạy | Pending |
+| TC-I01 | Add then display book | Add Book → Display Books | Book vừa thêm xuất hiện | Menu integration check đi qua Main Menu → Book Menu, thêm book qua `Add Book`, sau đó `Display Books` hiển thị đúng book vừa thêm | Pass |
+| TC-I02 | Add reader then borrow book | Add Reader → Add Book → Borrow Book | Record được tạo, quantity giảm | Menu integration check đi qua Reader Menu và Book Menu để tạo dữ liệu, sau đó `Borrow Book` tạo record `BORROWED` và giảm quantity | Pass |
+| TC-I03 | Borrow then return book | Borrow Book → Return Book | Record chuyển `RETURNED`, quantity tăng | Menu integration check gọi `Borrow Book` rồi `Return Book`, record chuyển sang `RETURNED` và quantity tăng lại | Pass |
+| TC-I04 | Save then reload | Save Data → restart program → Load Data | Dữ liệu vẫn còn | Menu Save Data check ghi đủ books/readers/borrow records; File I/O checks xác nhận load lại đúng dữ liệu; startup check xác nhận chương trình load dữ liệu trước khi vào Main Menu | Pass |
+| TC-I05 | Invalid menu choice | Nhập lựa chọn ngoài menu | Báo lỗi và hiển thị lại menu | Menu integration check nhập invalid numeric và non-numeric ở Main/Book/Reader menu, chương trình in `Invalid choice.` và tiếp tục nhận lựa chọn hợp lệ | Pass |
 
 ## 7. Verification Command
 

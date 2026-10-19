@@ -85,6 +85,18 @@ bool containsText(const string& text, const string& keyword) {
     return text.find(keyword) != string::npos;
 }
 
+int countTextOccurrences(const string& text, const string& keyword) {
+    int count = 0;
+    size_t position = text.find(keyword);
+
+    while (position != string::npos) {
+        count++;
+        position = text.find(keyword, position + keyword.length());
+    }
+
+    return count;
+}
+
 string readTextFile(const string& filename) {
     ifstream file(filename);
     ostringstream content;
@@ -458,6 +470,34 @@ int main() {
         !containsText(readTextFile("data/readers.dat"), "2003|Le Thi C|0912223333") ||
         !containsText(readTextFile("data/borrow_records.dat"), "1003|2003|0")) {
         return fail("mainMenu Save Data option should save books, readers, and borrow records");
+    }
+
+    LibraryData invalidMainNumericData;
+    string invalidMainNumericOutput = runMainMenuWithInput(invalidMainNumericData, "9\n0\n");
+    if (!containsText(invalidMainNumericOutput, "Invalid choice.") ||
+        containsText(invalidMainNumericOutput, "This menu option will be implemented")) {
+        return fail("mainMenu invalid numeric choice should print Invalid choice");
+    }
+
+    LibraryData invalidMainTextData;
+    string invalidMainTextOutput = runMainMenuWithInput(invalidMainTextData, "abc\n0\n");
+    if (!containsText(invalidMainTextOutput, "Invalid choice.") ||
+        countTextOccurrences(invalidMainTextOutput, "LIBRARY MANAGEMENT SYSTEM") < 2) {
+        return fail("mainMenu non-numeric input should recover and continue");
+    }
+
+    LibraryData invalidBookTextData;
+    string invalidBookTextOutput = runBookMenuWithInput(invalidBookTextData, "abc\n0\n");
+    if (!containsText(invalidBookTextOutput, "Invalid choice.") ||
+        countTextOccurrences(invalidBookTextOutput, "BOOK MANAGEMENT") < 2) {
+        return fail("bookMenu non-numeric input should recover and continue");
+    }
+
+    LibraryData invalidReaderTextData;
+    string invalidReaderTextOutput = runReaderMenuWithInput(invalidReaderTextData, "abc\n0\n");
+    if (!containsText(invalidReaderTextOutput, "Invalid choice.") ||
+        countTextOccurrences(invalidReaderTextOutput, "READER MANAGEMENT") < 2) {
+        return fail("readerMenu non-numeric input should recover and continue");
     }
 
     cout << "PASS: menu management automated checks" << endl;

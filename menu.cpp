@@ -1,6 +1,19 @@
 #include "library.h"
 
 #include <iostream>
+#include <limits>
+
+bool readMenuChoice(int& choice) {
+    if (cin >> choice) {
+        return true;
+    }
+
+    cout << "Invalid choice." << endl;
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    choice = -1;
+    return false;
+}
 
 void bookMenu(LibraryData& data) {
     (void)data;
@@ -22,8 +35,8 @@ void bookMenu(LibraryData& data) {
         cout << endl;
         cout << "Enter your choice: ";
 
-        if (!(cin >> choice)) {
-            return;
+        if (!readMenuChoice(choice)) {
+            continue;
         }
 
         if (choice == 1) {
@@ -63,8 +76,8 @@ void readerMenu(LibraryData& data) {
         cout << endl;
         cout << "Enter your choice: ";
 
-        if (!(cin >> choice)) {
-            return;
+        if (!readMenuChoice(choice)) {
+            continue;
         }
 
         if (choice == 1) {
@@ -134,8 +147,8 @@ void mainMenu(LibraryData& data) {
         cout << endl;
         cout << "Enter your choice: ";
 
-        if (!(cin >> choice)) {
-            return;
+        if (!readMenuChoice(choice)) {
+            continue;
         }
 
         if (choice == 1) {
@@ -151,7 +164,7 @@ void mainMenu(LibraryData& data) {
         } else if (choice == 6) {
             saveAllData(data);
         } else if (choice != 0) {
-            cout << "This menu option will be implemented in Sprint 6." << endl;
+            cout << "Invalid choice." << endl;
         }
     } while (choice != 0);
 }

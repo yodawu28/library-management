@@ -156,6 +156,17 @@ if grep -Eq "TC-F0[1-6].*\| Chưa chạy \| Pending" docs/TEST_DESIGN.md; then
   fail "docs/TEST_DESIGN.md still has pending File I/O test results"
 fi
 
+note "checking Console Menu manual E2E guide"
+MENU_INTEGRATION_GUIDE="tests/e2e/menu_integration_manual.md"
+[[ -f "$MENU_INTEGRATION_GUIDE" && -r "$MENU_INTEGRATION_GUIDE" ]] ||
+  fail "missing or unreadable $MENU_INTEGRATION_GUIDE"
+
+for test_id in TC-I01 TC-I02 TC-I03 TC-I04 TC-I05; do
+  if ! grep -q "$test_id" "$MENU_INTEGRATION_GUIDE"; then
+    fail "$MENU_INTEGRATION_GUIDE missing $test_id"
+  fi
+done
+
 TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/library-verify.XXXXXX")" || fail "cannot create temp directory"
 trap 'rm -rf "$TMP_DIR"' EXIT
 

@@ -44,6 +44,10 @@ for fixture in "${DATA_FILES[@]}"; do
 done
 
 note "checking architecture documentation freshness"
+if grep -Eq "AGENTS[.]md" scripts/verify.sh; then
+  fail "verify.sh must not depend on ignored local agent guide files"
+fi
+
 [[ -f ARCHITECTURE.md && -r ARCHITECTURE.md ]] || fail "missing or unreadable ARCHITECTURE.md"
 [[ -f README.md && -r README.md ]] || fail "missing or unreadable README.md"
 [[ -f CHANGELOG.md && -r CHANGELOG.md ]] || fail "missing or unreadable CHANGELOG.md"
@@ -120,6 +124,10 @@ fi
 
 if grep -Eq -- "Integrate startup and menus|Record manual test-case results and screenshots" CHANGELOG.md; then
   fail "CHANGELOG.md still lists completed Sprint 6.0 menu work as planned"
+fi
+
+if grep -Eq "Sprint 6\.0 khi tích hợp|khi Sprint 6\.0 tích hợp UI" docs/SYSTEM_DESIGN.md; then
+  fail "docs/SYSTEM_DESIGN.md still describes Sprint 6.0 menu integration as future work"
 fi
 
 if ! grep -q "Book: id|title|author|quantity" docs/SYSTEM_DESIGN.md; then

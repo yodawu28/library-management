@@ -193,9 +193,9 @@ Ví dụ:
 1001|2001|1
 ```
 
-Sprint 5.0 chỉ implement các hàm save/load trong `file.cpp`. Việc gọi load khi
-khởi động chương trình, gọi save từ menu, hoặc tự động save khi thoát sẽ thuộc
-Sprint 6.0 khi tích hợp `main.cpp` và `menu.cpp`.
+Sprint 5.0 implement các hàm save/load trong `file.cpp`. Sprint 6.0 đã tích
+hợp việc gọi load khi khởi động chương trình, gọi save từ menu, và điều hướng
+menu trong `main.cpp` / `menu.cpp`.
 
 ### 3.6 User Interface
 File:
@@ -208,9 +208,9 @@ Function:
 - `readerMenu(LibraryData& data)`.
 - `mainMenu(LibraryData& data)`.
 
-Menu nhận `LibraryData&` để khi Sprint 6.0 tích hợp UI, các lựa chọn Delete
-Book, Delete Reader, Borrow Book và Return Book đều dùng chung dữ liệu sách,
-độc giả và phiếu mượn.
+Menu nhận `LibraryData&` để các lựa chọn Delete Book, Delete Reader, Borrow
+Book và Return Book đều dùng chung dữ liệu sách, độc giả và phiếu mượn sau khi
+Sprint 6.0 hoàn tất phần UI integration.
 
 ## 4. Menu Design
 

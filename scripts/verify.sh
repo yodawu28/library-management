@@ -44,11 +44,12 @@ for fixture in "${DATA_FILES[@]}"; do
 done
 
 note "checking architecture documentation freshness"
-if grep -Eq "AGENTS[.]md" scripts/verify.sh; then
-  fail "verify.sh must not depend on ignored local agent guide files"
+if grep -Eq "AGENTS[.]md|PROGRESS[.]md|DECISIONS[.]md|[.]agents/|docs[/]progress/" scripts/verify.sh; then
+  fail "verify.sh must not depend on ignored local governance files"
 fi
 
 [[ -f ARCHITECTURE.md && -r ARCHITECTURE.md ]] || fail "missing or unreadable ARCHITECTURE.md"
+[[ -f docs/SYSTEM_DESIGN.md && -r docs/SYSTEM_DESIGN.md ]] || fail "missing or unreadable docs/SYSTEM_DESIGN.md"
 [[ -f README.md && -r README.md ]] || fail "missing or unreadable README.md"
 [[ -f CHANGELOG.md && -r CHANGELOG.md ]] || fail "missing or unreadable CHANGELOG.md"
 

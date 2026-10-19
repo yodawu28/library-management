@@ -84,6 +84,10 @@ if grep -Eq "Sprint 5\.6|By Sprint 5\.5" ARCHITECTURE.md; then
   fail "ARCHITECTURE.md still describes stale Sprint 5 File I/O status"
 fi
 
+if grep -Eq "Sprint 6\.0 in progress|Sprint 6\.0 has started|remaining menu routing tasks|Integrate menus after individual modules behave correctly" ARCHITECTURE.md; then
+  fail "ARCHITECTURE.md still describes Sprint 6.0 menu integration as unfinished"
+fi
+
 if grep -Eq "library\.h:[0-9]" ARCHITECTURE.md; then
   fail "ARCHITECTURE.md uses fragile library.h line references"
 fi
@@ -112,6 +116,10 @@ fi
 
 if grep -Eq -- "- Implement Borrow / Return\.|deferred đến Sprint 4\.0" CHANGELOG.md; then
   fail "CHANGELOG.md still describes Borrow/Return or TC-R07 as pending"
+fi
+
+if grep -Eq -- "Integrate startup and menus|Record manual test-case results and screenshots" CHANGELOG.md; then
+  fail "CHANGELOG.md still lists completed Sprint 6.0 menu work as planned"
 fi
 
 if ! grep -q "Book: id|title|author|quantity" docs/SYSTEM_DESIGN.md; then

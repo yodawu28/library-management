@@ -47,6 +47,14 @@
 - Thêm hướng dẫn manual E2E cho File I/O trong `tests/e2e/`.
 - Ghi kết quả TC-F01 đến TC-F06 trong `docs/TEST_DESIGN.md`.
 
+## v0.6.0 - 2026-10-19
+- Hoàn thành Sprint 6.0 Console Menu Integration.
+- Implement startup load trong `main.cpp` và tách menu routing sang `menu.cpp`.
+- Hoàn thiện Main Menu, Book Menu, Reader Menu, Borrow Book, Return Book,
+  Display Data, Save Data, Exit flow, và invalid input recovery.
+- Thêm automated regression checks nội bộ cho Menu Management và Startup Load.
+- Thêm hướng dẫn manual E2E cho Console Menu trong `tests/e2e/`.
+- Ghi kết quả TC-I01 đến TC-I05 trong `docs/TEST_DESIGN.md`.
+
 ## Planned
-- Integrate startup and menus in `main.cpp` / `menu.cpp`.
-- Record manual test-case results and screenshots for the final report.
+- Final hardening, demo evidence, README review, and final report preparation.

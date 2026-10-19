@@ -1,6 +1,6 @@
 # Architecture & Codebase Research
 
-Date: 2026-10-12
+Date: 2026-10-19
 
 Scope: static exploration of the current C++ source code, module contract, verification script, and performance/technical-debt risks.
 
@@ -16,7 +16,7 @@ Current source files:
 | Reader module | `reader.cpp` | Implemented for Sprint 3.0: add, update, delete, search, display, `getReaderById`, and `printReader` |
 | Borrow / Return module | `borrow.cpp` | Implemented for Sprint 4.0: borrow flow, return flow, validation, active-borrow checks, and test-result recording |
 | File I/O module | `file.cpp` | Sprint 5.0 complete: save/load, malformed-data handling, manual E2E guide, and TC-F01 through TC-F06 recorded |
-| UI / Integration | `main.cpp`, `menu.cpp` | Sprint 6.0 in progress: `main.cpp` loads startup data and enters the menu; `menu.cpp` owns console menu functions |
+| UI / Integration | `main.cpp`, `menu.cpp` | Sprint 6.0 complete: `main.cpp` loads startup data and enters the menu; `menu.cpp` owns Main, Book, and Reader menu routing, Display Data, Save Data, Borrow/Return routing, and invalid choice recovery |
 | Verification | `scripts/verify.sh` | Active deterministic syntax/header checks, architecture freshness checks, Book, Reader, Borrow, File, and Menu Management automated checks |
 | Data fixtures | `data/*.dat` | Present, currently empty |
 
@@ -28,9 +28,10 @@ unavailable book, duplicate active borrow, valid return, missing return record,
 and already-returned validation. The shared `validation.cpp` helper module owns
 simple ID, non-negative number, and empty-text checks. `file.cpp` now contains
 Book, Reader, and BorrowRecord persistence plus empty, malformed, and
-domain-invalid load handling for Sprint 5.0. The File I/O manual E2E guide and
-TC-F01 through TC-F06 results are recorded, while Sprint 6.0 has started with a
-small menu scaffold in `menu.cpp` and startup loading in `main.cpp`.
+domain-invalid load handling for Sprint 5.0. Sprint 6.0 has completed console
+menu integration: startup loading, Book/Reader submenus, Borrow/Return routing,
+Display Data, Save Data, invalid menu input recovery, and manual integration
+test evidence.
 The bottleneck analysis
 below separates confirmed implemented behavior from future module risks.
 
@@ -240,19 +241,21 @@ Recommendation:
 - Keep `scripts/verify.sh` as the canonical command.
 - Add a small `Makefile` later if the group wants a friendlier manual build command, but keep it called by `verify.sh` rather than replacing the verification entrypoint.
 
-### P5 - Current Verification Links Focused Module Checks, Not the Full Application
+### P5 - Current Verification Links Focused Module and Integration Checks
 
 `scripts/verify.sh` checks each source file with `-fsyntax-only`, builds a
 header compile check, checks documentation freshness for known architecture
 drift, and builds/runs the Book Management, Reader Management, Borrow
 Management, File Management, and Menu Management automated regression checks.
-This catches module link errors for implemented menu functions and startup
-loading, but final user navigation still depends on the remaining menu routing
-tasks.
+The Menu Management check compiles `main.cpp`, `menu.cpp`, and all implemented
+modules together under the test harness, while the Startup Load check verifies
+that startup calls load books, readers, and borrow records before entering the
+main menu.
 
 Recommendation:
 - Keep adding focused module regression checks as each module is implemented.
-- After menu integration, extend `verify.sh` to compile and link the full application.
+- For final submission, optionally add a simple full-application build command
+  beside the existing focused harness checks.
 - Keep manual module test cases as the required course evidence; automated tests are optional if the team has time.
 
 ### P6 - Header Pollutes Global Namespace
@@ -282,20 +285,19 @@ No application logging or credential handling exists. Current privacy/security r
 
 ## 10. Prioritized Action Plan
 
-1. Use the completed Book Management module as the style reference for future modules.
-2. Implement Reader Management with matching validation style.
-3. Keep Borrow / Return regression checks green while moving to File I/O.
-4. Keep File I/O malformed input handling covered while integrating menus.
-5. Integrate menus after individual modules behave correctly.
-6. Run `./scripts/verify.sh` before each milestone and before final submission.
+1. Keep `./scripts/verify.sh` green before each milestone and before final submission.
+2. Run the manual E2E guides in `tests/e2e/` to collect classroom-facing demo evidence.
+3. Keep `docs/TEST_DESIGN.md` aligned with actual manual test results.
+4. Review README and final report material after Sprint 7.0 evidence is collected.
+5. Avoid adding advanced data structures unless the vector-based version becomes hard to explain or too slow for course-scale data.
 
 ## 11. Summary
 
 The current codebase is a contract-first C++ course project with Book
-Management, Reader Management, Borrow / Return, and File I/O persistence
-implemented. The architecture remains appropriate for the assignment: flat C++
-modules, shared `library.h`, in-memory vectors, focused automated checks,
-manual E2E evidence, and simple text-file persistence. The main future
-performance bottleneck is predictable O(n) vector scanning for lookup-heavy
-workflows, but that trade-off is acceptable at this stage and easier for the
-group to implement, test, and explain.
+Management, Reader Management, Borrow / Return, File I/O persistence, and
+console menu integration implemented. The architecture remains appropriate for
+the assignment: flat C++ modules, shared `library.h`, in-memory vectors,
+focused automated checks, manual E2E evidence, and simple text-file
+persistence. The main future performance bottleneck is predictable O(n) vector
+scanning for lookup-heavy workflows, but that trade-off is acceptable at this
+stage and easier for the group to implement, test, and explain.

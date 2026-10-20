@@ -28,7 +28,31 @@ Required final evidence:
 - TC-B09: Search Book by title keyword.
 - TC-B10: Sort Books by title.
 
-Final status: Pending S7.3 manual run.
+S7.3 manual run path: real console program from the project root, Main Menu
+`1. Book Management`, with no Save Data step.
+
+Actual results:
+- TC-B01: Add Book printed `Book added successfully.`; Display Books showed
+  ID `1001`, title `Clean Code`, author `Robert C. Martin`, quantity `3`.
+- TC-B02: Adding ID `1001` again printed `Book ID already exists.` and did
+  not ask for duplicate title/author/quantity data.
+- TC-B03: Adding a new ID with an empty title printed
+  `Title cannot be empty.` and returned to Book Management.
+- TC-B04: Adding a valid title/author with quantity `-1` printed
+  `Quantity cannot be negative.` and returned to Book Management.
+- TC-B05: Updating ID `1001` printed `Book updated successfully.`; later
+  Display Books showed title `Clean Code Updated`, author
+  `Robert C. Martin`, quantity `5`.
+- TC-B06: Updating missing ID `9999` printed `Book not found.`.
+- TC-B07: Deleting ID `1004` printed `Book deleted successfully.`; later
+  Display Books no longer showed `Zebra Book` and still showed the remaining
+  books.
+- TC-B09: Search by title keyword `Code` displayed only ID `1001` with title
+  `Clean Code Updated` from the current run.
+- TC-B10: Sort by title printed `Books sorted successfully.` and displayed
+  `Algorithms` before `Clean Code Updated`.
+
+Final status: Completed in S7.3 manual run.
 
 ## Reader Management
 
@@ -44,7 +68,28 @@ Required final evidence:
 - TC-R07: Delete Reader with active borrow record.
 - TC-R08: Search Reader by name keyword.
 
-Final status: Pending S7.3 manual run.
+S7.3 manual run path: real console program from the project root, Main Menu
+`2. Reader Management`; TC-R07 additionally used Main Menu `3. Borrow Book`
+to create an active borrow record before attempting deletion.
+
+Actual results:
+- TC-R01: Add Reader printed `Reader added successfully.`; Display Readers
+  showed ID `2001`, name `Nguyen Van An`, phone `0901234567`.
+- TC-R02: Adding ID `2001` again printed `Reader ID already exists.` and did
+  not create a duplicate reader.
+- TC-R03: Adding a new ID with an empty name printed
+  `Name cannot be empty.` and returned to Reader Management.
+- TC-R04: Updating ID `2001` printed `Reader updated successfully.`; later
+  Display Readers showed name `Nguyen Van An Updated`, phone `0909999999`.
+- TC-R05: Updating missing ID `9999` printed `Reader not found.`.
+- TC-R06: Deleting ID `2003` printed `Reader deleted successfully.`; later
+  Display Readers no longer showed `Tran Thi Binh`.
+- TC-R07: After borrowing book ID `1010` for reader ID `2010`, deleting
+  reader ID `2010` printed `Reader is currently borrowing books.`.
+- TC-R08: Search by name keyword `Nguyen` displayed only ID `2001` with name
+  `Nguyen Van An Updated` from the current run.
+
+Final status: Completed in S7.3 manual run.
 
 ## Borrow / Return
 
@@ -92,8 +137,8 @@ Final status: Pending S7.5 manual run.
 
 ## Final Handoff Checklist
 
-- [ ] Book Management final evidence recorded.
-- [ ] Reader Management final evidence recorded.
+- [x] Book Management final evidence recorded.
+- [x] Reader Management final evidence recorded.
 - [ ] Borrow / Return final evidence recorded.
 - [ ] File I/O final evidence recorded.
 - [ ] Menu Integration final evidence recorded.

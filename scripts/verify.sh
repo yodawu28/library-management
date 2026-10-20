@@ -205,8 +205,21 @@ for required_text in \
   "tests/e2e/file_management_manual.md" \
   "tests/e2e/menu_integration_manual.md" \
   "TC-B01" "TC-R01" "TC-BR01" "TC-RT01" "TC-F01" "TC-I01"; do
-  if ! grep -q "$required_text" "$FINAL_EVIDENCE"; then
+  if ! grep -Fq -- "$required_text" "$FINAL_EVIDENCE"; then
     fail "$FINAL_EVIDENCE missing $required_text"
+  fi
+done
+
+if grep -Fq -- "Final status: Pending S7.3 manual run" "$FINAL_EVIDENCE"; then
+  fail "$FINAL_EVIDENCE still has pending S7.3 Book/Reader manual evidence"
+fi
+
+for required_text in \
+  "Final status: Completed in S7.3 manual run." \
+  "- [x] Book Management final evidence recorded." \
+  "- [x] Reader Management final evidence recorded."; do
+  if ! grep -Fq -- "$required_text" "$FINAL_EVIDENCE"; then
+    fail "$FINAL_EVIDENCE missing S7.3 completion evidence: $required_text"
   fi
 done
 

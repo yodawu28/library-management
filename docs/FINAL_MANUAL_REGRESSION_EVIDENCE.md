@@ -180,7 +180,29 @@ Required final evidence:
 - TC-I04: Save then reload.
 - TC-I05: Invalid menu choice.
 
-Final status: Pending S7.5 manual run.
+S7.5 manual run path: real console program executed from a temporary directory
+under `/tmp` with clean `data/*.dat` files, using Main Menu plus Book and
+Reader submenus.
+
+Actual results:
+- TC-I01: Main Menu `1. Book Management` -> `Add Book` added book ID `3101`;
+  `Display Books` showed title `Menu Integration Book`, author
+  `Student Team`, quantity `5`, then `Back` returned to the Main Menu.
+- TC-I02: Main Menu `2. Reader Management` added reader ID `4101`, then Book
+  Management added book ID `3102`; Main Menu `3. Borrow Book` printed
+  `Book borrowed successfully.` and Display Data showed reader ID `4101`, book
+  ID `3102`, status `Borrowed`, and quantity `1`.
+- TC-I03: Main Menu `4. Return Book` for reader ID `4101` and book ID `3102`
+  printed `Book returned successfully.`; Display Data showed status
+  `Returned` and book ID `3102` quantity restored to `2`.
+- TC-I04: Main Menu `6. Save Data` printed `Data saved successfully.`; after
+  restarting from the same temporary directory, Display Data still showed book
+  IDs `3101` and `3102`, reader ID `4101`, and borrow record `3102|4101|0`.
+- TC-I05: Invalid Main Menu choices `9` and `abc`, invalid Book Menu choice
+  `abc`, and invalid Reader Menu choice `abc` each printed `Invalid choice.`;
+  the program continued to accept the next valid choice.
+
+Final status: Completed in S7.5 manual run.
 
 ## Final Handoff Checklist
 
@@ -188,5 +210,5 @@ Final status: Pending S7.5 manual run.
 - [x] Reader Management final evidence recorded.
 - [x] Borrow / Return final evidence recorded.
 - [x] File I/O final evidence recorded.
-- [ ] Menu Integration final evidence recorded.
+- [x] Menu Integration final evidence recorded.
 - [ ] `./scripts/verify.sh` passed after final evidence updates.

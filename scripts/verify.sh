@@ -53,6 +53,19 @@ fi
 [[ -f README.md && -r README.md ]] || fail "missing or unreadable README.md"
 [[ -f CHANGELOG.md && -r CHANGELOG.md ]] || fail "missing or unreadable CHANGELOG.md"
 
+note "checking README final run instructions"
+for required_text in \
+  "c++ -std=c++17 -Wall -Wextra -Werror -pedantic main.cpp menu.cpp book.cpp reader.cpp borrow.cpp file.cpp validation.cpp -o library_management" \
+  "./library_management" \
+  "./scripts/verify.sh" \
+  "tests/e2e/" \
+  "tests/automated/" \
+  "docs/FINAL_MANUAL_REGRESSION_EVIDENCE.md"; do
+  if ! grep -Fq -- "$required_text" README.md; then
+    fail "README.md missing final run instruction or evidence reference: $required_text"
+  fi
+done
+
 if grep -q "Book module | \`book.cpp\` | Present, currently empty" ARCHITECTURE.md; then
   fail "ARCHITECTURE.md still says book.cpp is empty"
 fi
@@ -111,7 +124,7 @@ if awk '
   fail "mainMenu contract should use LibraryData instead of separate vectors"
 fi
 
-if grep -q "nếu sau này nhóm thêm test tự động" README.md; then
+if grep -Eq "nếu (sau này )?nhóm thêm test tự động|future work" README.md; then
   fail "README.md still describes automated tests as future work"
 fi
 

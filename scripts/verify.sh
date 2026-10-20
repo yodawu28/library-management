@@ -140,6 +140,25 @@ if grep -Eq -- "Integrate startup and menus|Record manual test-case results and 
   fail "CHANGELOG.md still lists completed Sprint 6.0 menu work as planned"
 fi
 
+if grep -Eq -- "Final hardening, demo evidence, README review, and final report preparation|README review" CHANGELOG.md; then
+  fail "CHANGELOG.md still lists completed Sprint 7.0 evidence or README work as planned"
+fi
+
+if grep -Eq "remaining modules|Review README and final report material after Sprint 7\.0 evidence is collected" ARCHITECTURE.md; then
+  fail "ARCHITECTURE.md still describes stale Sprint 7.0 final-hardening follow-up work"
+fi
+
+for required_text in \
+  "Sprint 7.0 final hardening" \
+  "docs/FINAL_MANUAL_REGRESSION_EVIDENCE.md" \
+  "v0.7.0" \
+  "Final manual regression evidence" \
+  "Final verification evidence"; do
+  if ! grep -Fq -- "$required_text" ARCHITECTURE.md CHANGELOG.md docs/SYSTEM_DESIGN.md; then
+    fail "final architecture/changelog docs missing S7.7 evidence marker: $required_text"
+  fi
+done
+
 if grep -Eq "Sprint 6\.0 khi tích hợp|khi Sprint 6\.0 tích hợp UI" docs/SYSTEM_DESIGN.md; then
   fail "docs/SYSTEM_DESIGN.md still describes Sprint 6.0 menu integration as future work"
 fi

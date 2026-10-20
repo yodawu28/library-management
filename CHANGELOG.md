@@ -56,5 +56,18 @@
 - Thêm hướng dẫn manual E2E cho Console Menu trong `tests/e2e/`.
 - Ghi kết quả TC-I01 đến TC-I05 trong `docs/TEST_DESIGN.md`.
 
+## v0.7.0 - 2026-10-20
+- Hoàn thành Sprint 7.0 final hardening cho phạm vi evidence và tài liệu.
+- Thêm `docs/FINAL_MANUAL_REGRESSION_EVIDENCE.md` để lưu Final manual
+  regression evidence cho Book, Reader, Borrow / Return, File I/O, và Menu
+  Integration.
+- Ghi actual results cho S7.3, S7.4, và S7.5 từ các lần chạy console thật.
+- Cập nhật `README.md` với source layout hiện tại, lệnh build, lệnh run, lệnh
+  verify, và vị trí bằng chứng báo cáo.
+- Thêm Final verification evidence gates trong `scripts/verify.sh` để phát
+  hiện README/evidence/documentation drift trước khi commit.
+- Refresh `ARCHITECTURE.md`, `CHANGELOG.md`, và `docs/SYSTEM_DESIGN.md` để
+  phản ánh trạng thái cuối của Sprint 7.0.
+
 ## Planned
-- Final hardening, demo evidence, README review, and final report preparation.
+- Final release verification handoff and PR preparation.

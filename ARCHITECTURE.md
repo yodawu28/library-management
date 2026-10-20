@@ -1,8 +1,10 @@
 # Architecture & Codebase Research
 
-Date: 2026-10-19
+Date: 2026-10-20
 
-Scope: static exploration of the current C++ source code, module contract, verification script, and performance/technical-debt risks.
+Scope: static exploration of the current C++ source code, module contract,
+verification script, final evidence documents, and performance/technical-debt
+risks.
 
 ## 1. Repository Snapshot
 
@@ -19,6 +21,7 @@ Current source files:
 | UI / Integration | `main.cpp`, `menu.cpp` | Sprint 6.0 complete: `main.cpp` loads startup data and enters the menu; `menu.cpp` owns Main, Book, and Reader menu routing, Display Data, Save Data, Borrow/Return routing, and invalid choice recovery |
 | Verification | `scripts/verify.sh` | Active deterministic syntax/header checks, architecture freshness checks, Book, Reader, Borrow, File, and Menu Management automated checks |
 | Data fixtures | `data/*.dat` | Present, currently empty |
+| Final evidence | `docs/FINAL_MANUAL_REGRESSION_EVIDENCE.md` | Sprint 7.0 final hardening evidence for Book, Reader, Borrow / Return, File I/O, and Menu Integration manual regression |
 
 Sprint 2.0 has completed Book Management in `book.cpp`. Sprint 3.0 has
 completed Reader Management in `reader.cpp`, including add, update, delete,
@@ -32,8 +35,11 @@ domain-invalid load handling for Sprint 5.0. Sprint 6.0 has completed console
 menu integration: startup loading, Book/Reader submenus, Borrow/Return routing,
 Display Data, Save Data, invalid menu input recovery, and manual integration
 test evidence.
+Sprint 7.0 final hardening has recorded report-facing manual regression
+evidence in `docs/FINAL_MANUAL_REGRESSION_EVIDENCE.md` and refreshed README
+build, run, verification, and evidence instructions.
 The bottleneck analysis
-below separates confirmed implemented behavior from future module risks.
+below separates confirmed implemented behavior from remaining project risks.
 
 ## 2. Confirmed Data Model
 
@@ -277,7 +283,7 @@ Recommendation:
 
 ## 9. Security & Privacy Boundary Notes
 
-No application logging or credential handling exists. Current privacy/security risks are therefore design-time risks for the remaining modules:
+No application logging or credential handling exists. Current privacy/security risks are therefore design-time risks for the console project:
 
 - File I/O skips malformed records instead of silently creating invalid state.
 - Menu input should validate numeric IDs and quantities before mutating vectors.
@@ -285,10 +291,10 @@ No application logging or credential handling exists. Current privacy/security r
 
 ## 10. Prioritized Action Plan
 
-1. Keep `./scripts/verify.sh` green before each milestone and before final submission.
-2. Run the manual E2E guides in `tests/e2e/` to collect classroom-facing demo evidence.
-3. Keep `docs/TEST_DESIGN.md` aligned with actual manual test results.
-4. Review README and final report material after Sprint 7.0 evidence is collected.
+1. Keep `./scripts/verify.sh` green before final submission and before any commit.
+2. Use `docs/FINAL_MANUAL_REGRESSION_EVIDENCE.md` as the report-facing manual regression evidence source.
+3. Keep `docs/TEST_DESIGN.md` aligned with the manual E2E guides in `tests/e2e/`.
+4. Use the README build, run, and verification commands during demo preparation.
 5. Avoid adding advanced data structures unless the vector-based version becomes hard to explain or too slow for course-scale data.
 
 ## 11. Summary
@@ -298,6 +304,8 @@ Management, Reader Management, Borrow / Return, File I/O persistence, and
 console menu integration implemented. The architecture remains appropriate for
 the assignment: flat C++ modules, shared `library.h`, in-memory vectors,
 focused automated checks, manual E2E evidence, and simple text-file
-persistence. The main future performance bottleneck is predictable O(n) vector
-scanning for lookup-heavy workflows, but that trade-off is acceptable at this
-stage and easier for the group to implement, test, and explain.
+persistence. Final verification evidence is now tied to deterministic
+`./scripts/verify.sh` gates plus the manual regression evidence document. The
+main future performance bottleneck is predictable O(n) vector scanning for
+lookup-heavy workflows, but that trade-off is acceptable at this stage and
+easier for the group to implement, test, and explain.

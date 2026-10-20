@@ -347,5 +347,19 @@ Step 3: Reader Management
 Step 4: Borrow / Return
 Step 5: File I/O
 Step 6: Menu integration
-Step 7: Testing
+Step 7: Testing and final evidence
 ```
+
+## 7. Verification And Final Evidence
+
+Final verification evidence is split into two layers:
+
+- `./scripts/verify.sh`: deterministic local verification for compiler checks,
+  module regression checks, documentation freshness checks, and required final
+  evidence references.
+- `docs/FINAL_MANUAL_REGRESSION_EVIDENCE.md`: Final manual regression evidence
+  collected from the real console program for Book, Reader, Borrow / Return,
+  File I/O, and Menu Integration.
+
+This keeps automated checks useful for the development team while preserving
+manual E2E results as the student-facing evidence for the course report.

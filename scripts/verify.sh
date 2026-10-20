@@ -188,6 +188,28 @@ if grep -Eq "TC-I0[1-5].*\| Chưa chạy \| Pending" docs/TEST_DESIGN.md; then
   fail "docs/TEST_DESIGN.md still has pending Integration test results"
 fi
 
+note "checking final manual regression evidence checklist"
+FINAL_EVIDENCE="docs/FINAL_MANUAL_REGRESSION_EVIDENCE.md"
+[[ -f "$FINAL_EVIDENCE" && -r "$FINAL_EVIDENCE" ]] ||
+  fail "missing or unreadable $FINAL_EVIDENCE"
+
+for required_text in \
+  "Book Management" \
+  "Reader Management" \
+  "Borrow / Return" \
+  "File I/O" \
+  "Menu Integration" \
+  "tests/e2e/book_management_manual.md" \
+  "tests/e2e/reader_management_manual.md" \
+  "tests/e2e/borrow_return_manual.md" \
+  "tests/e2e/file_management_manual.md" \
+  "tests/e2e/menu_integration_manual.md" \
+  "TC-B01" "TC-R01" "TC-BR01" "TC-RT01" "TC-F01" "TC-I01"; do
+  if ! grep -q "$required_text" "$FINAL_EVIDENCE"; then
+    fail "$FINAL_EVIDENCE missing $required_text"
+  fi
+done
+
 TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/library-verify.XXXXXX")" || fail "cannot create temp directory"
 trap 'rm -rf "$TMP_DIR"' EXIT
 

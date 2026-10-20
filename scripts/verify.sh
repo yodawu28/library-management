@@ -223,6 +223,19 @@ for required_text in \
   fi
 done
 
+if grep -Fq -- "Final status: Pending S7.4 manual run" "$FINAL_EVIDENCE"; then
+  fail "$FINAL_EVIDENCE still has pending S7.4 Borrow/Return or File I/O manual evidence"
+fi
+
+for required_text in \
+  "Final status: Completed in S7.4 manual run." \
+  "- [x] Borrow / Return final evidence recorded." \
+  "- [x] File I/O final evidence recorded."; do
+  if ! grep -Fq -- "$required_text" "$FINAL_EVIDENCE"; then
+    fail "$FINAL_EVIDENCE missing S7.4 completion evidence: $required_text"
+  fi
+done
+
 TMP_DIR="$(mktemp -d "${TMPDIR:-/tmp}/library-verify.XXXXXX")" || fail "cannot create temp directory"
 trap 'rm -rf "$TMP_DIR"' EXIT
 

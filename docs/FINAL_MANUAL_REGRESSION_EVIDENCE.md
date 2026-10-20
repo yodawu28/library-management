@@ -105,7 +105,31 @@ Required final evidence:
 - TC-RT02: Reject return without matching record.
 - TC-RT03: Reject already returned record.
 
-Final status: Pending S7.4 manual run.
+S7.4 manual run path: real console program from the project root, with setup
+data entered through Book Management and Reader Management, then Main Menu
+`3. Borrow Book`, `4. Return Book`, and `5. Display Data`.
+
+Actual results:
+- TC-BR01: Borrowing book ID `1001` for reader ID `2001` printed
+  `Book borrowed successfully.`; Display Data showed book ID `1001` quantity
+  decreased from `2` to `1` and borrow record status `Borrowed`.
+- TC-BR02: Borrowing with reader ID `9999` printed `Reader not found.` and
+  did not ask for a book ID.
+- TC-BR03: Borrowing with reader ID `2001` and missing book ID `9999` printed
+  `Book not found.`.
+- TC-BR04: Borrowing unavailable book ID `1002` with quantity `0` printed
+  `Book is unavailable.`.
+- TC-BR05: Borrowing book ID `1001` again for reader ID `2001` while the
+  first record was still active printed `Reader already borrowed this book.`.
+- TC-RT01: Returning book ID `1001` for reader ID `2001` printed
+  `Book returned successfully.`; Display Data showed book ID `1001` quantity
+  increased back to `2` and borrow record status `Returned`.
+- TC-RT02: Returning book ID `1001` for reader ID `2002` printed
+  `Borrow record not found.`.
+- TC-RT03: Returning book ID `1001` again for reader ID `2001` printed
+  `Book already returned.`.
+
+Final status: Completed in S7.4 manual run.
 
 ## File I/O
 
@@ -120,7 +144,30 @@ Required final evidence:
 - TC-F06: Load Borrow Records.
 - Malformed Data Check: malformed lines are skipped and valid lines still load.
 
-Final status: Pending S7.4 manual run.
+S7.4 manual run path: real console program executed from a temporary directory
+under `/tmp` with copied `data/*.dat` files, so repository fixtures stayed
+unchanged.
+
+Actual results:
+- TC-F01: After adding book ID `1001` and choosing Save Data, temporary
+  `data/books.dat` contained `1001|Clean Code|Robert C. Martin|3`.
+- TC-F02: Restarting the program from the same temporary directory loaded and
+  displayed book ID `1001`, title `Clean Code`, author `Robert C. Martin`,
+  quantity `3`.
+- TC-F03: After adding reader ID `2001` and choosing Save Data, temporary
+  `data/readers.dat` contained `2001|Nguyen Van An|090 123 4567`.
+- TC-F04: Restarting the program loaded and displayed reader ID `2001`, name
+  `Nguyen Van An`, phone `090 123 4567`.
+- TC-F05: After borrowing book ID `1001` for reader ID `2001` and choosing
+  Save Data, temporary `data/borrow_records.dat` contained `1001|2001|1`.
+- TC-F06: Restarting the program loaded and displayed borrow record book ID
+  `1001`, reader ID `2001`, status `Borrowed`.
+- Malformed Data Check: temporary files containing one malformed line plus
+  valid lines still loaded the valid book `1002|Code Complete|Steve McConnell|2`,
+  reader `2002|Tran Thi B, QA|+84 98 765 4321`, and borrow records with
+  statuses `Borrowed` and `Returned`; the program did not crash.
+
+Final status: Completed in S7.4 manual run.
 
 ## Menu Integration
 
@@ -139,7 +186,7 @@ Final status: Pending S7.5 manual run.
 
 - [x] Book Management final evidence recorded.
 - [x] Reader Management final evidence recorded.
-- [ ] Borrow / Return final evidence recorded.
-- [ ] File I/O final evidence recorded.
+- [x] Borrow / Return final evidence recorded.
+- [x] File I/O final evidence recorded.
 - [ ] Menu Integration final evidence recorded.
 - [ ] `./scripts/verify.sh` passed after final evidence updates.
